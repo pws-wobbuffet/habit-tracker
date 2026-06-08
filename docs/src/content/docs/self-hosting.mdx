@@ -1,0 +1,71 @@
+---
+title: Self-Hosting
+draft: false
+description: Build and serve the Habit Tracker on your own infrastructure.
+---
+
+## Build
+
+```sh
+pnpm install
+bun run build
+```
+
+The production files land in `dist/`. It is a static site (HTML, CSS, JS) and can be served by any HTTP server.
+
+## Serving the static files
+
+The only special requirements:
+
+- Serve `sw.js` with `Cache-Control: no-cache, no-store` so the service worker always updates.
+- Redirect all routes to `index.html` (SPA fallback).
+
+### nginx example
+
+```nginx
+server {
+    listen 80;
+    root /path/to/dist;
+    index index.html;
+
+    location = /sw.js {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+### Caddy example
+
+```caddyfile
+example.com {
+    root * /path/to/dist
+    encode gzip
+    handle_errors {
+        rewrite * /index.html
+    }
+    file_server
+}
+```
+
+## Optional backend server (for remote storage)
+
+If you prefer PostgreSQL or SQLite file storage over the default browser-side IndexedDB:
+
+```sh
+cd server
+BACKEND=sqlite bun start        # SQLite file
+BACKEND=postgres DATABASE_URL=postgres://... bun start  # PostgreSQL
+```
+
+Then in your frontend `.env`:
+
+```
+VITE_STORAGE_BACKEND=remote
+VITE_API_URL=http://your-server:3001
+```
+
+Rebuild (`bun run build`) after changing `.env`.

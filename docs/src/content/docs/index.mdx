@@ -1,0 +1,49 @@
+---
+title: Getting Started
+draft: false
+description: Install and use the Habit Tracker PWA.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+**Habit Tracker** is a mobile-first PWA for tracking daily habits. It works offline, installs to your home screen, and feels like a native iOS app.
+
+<CardGrid>
+  <Card title="Offline-first" icon="seti:db">
+    All data lives in your browser (IndexedDB). No account, no cloud, no data leaves your device.
+  </Card>
+  <Card title="Installable" icon="seti:mobile">
+    Add to your iPhone or Android home screen directly from the browser.
+  </Card>
+  <Card title="Pluggable storage" icon="open-book">
+    Start with the default IndexedDB backend or switch to SQLite WASM or a remote REST server.
+  </Card>
+</CardGrid>
+
+## Installing as a PWA
+
+### iOS (Safari)
+
+1. Open the app URL in **Safari** (not Chrome).
+2. Tap the **Share** button (square with arrow).
+3. Tap **Add to Home Screen**.
+4. Tap **Add**.
+
+The app will open in standalone mode with no browser chrome.
+
+### Android (Chrome)
+
+1. Open the app URL in **Chrome**.
+2. Tap the menu (three dots) and choose **Add to Home screen**.
+3. Tap **Add**.
+
+## Running locally
+
+```sh
+git clone https://github.com/pws-wobbuffet/habit-tracker
+cd habit-tracker
+pnpm install
+bun run dev
+```
+
+Open `http://localhost:5173` in your browser.

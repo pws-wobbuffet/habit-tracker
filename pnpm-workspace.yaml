@@ -1,0 +1,10 @@
+packages:
+  - '.'
+  - 'docs'
+  - 'server'
+
+allowBuilds:
+  esbuild: true
+  '@tailwindcss/oxide': true
+  lightningcss: true
+  sharp: true

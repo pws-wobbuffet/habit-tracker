@@ -1,0 +1,53 @@
+---
+title: Architecture
+draft: false
+description: Data model, storage backends, and state management.
+---
+
+## Data model
+
+Three core types in `src/types/index.ts`:
+
+```ts
+type Schedule = 'daily' | 'weekly' | { days: number[] }
+
+interface Habit       { id, name, icon, schedule, isFavorite, createdAt }
+interface Completion  { id, habitId, date, note?, voiceMemoUrl? }
+interface UserProfile { name, joinDate, themeMode: 'light' | 'dark' }
+```
+
+## Storage backends
+
+The `StorageBackend` interface (`src/storage/types.ts`) abstracts all persistence. Pick a backend with the `VITE_STORAGE_BACKEND` env var:
+
+| Backend | Value | Notes |
+|---|---|---|
+| IndexedDB (default) | `idb` | Offline-first, no server |
+| SQLite WASM | `sqlite-wasm` | Browser-embedded, OPFS-backed |
+| Remote REST | `remote` | Requires the `server/` Bun server |
+
+Copy `.env.example` to `.env` and set the backend before starting.
+
+## State management
+
+Zustand stores (`src/store/`) hold all in-memory state. Each store hydrates from the active backend on startup and writes through on every mutation. No Zustand `persist` middleware — stores write individual records rather than serializing the whole state.
+
+```
+main.tsx
+  └─ hydrate all stores in parallel (Promise.all)
+     └─ render <App />
+```
+
+## Component structure
+
+```
+App
+  IPhoneFrame (desktop shell)
+    BottomNav
+    AnimatePresence (page transitions)
+      TodayScreen | CalendarScreen | ...
+    HabitSheet (portal, outside scroll)
+    ToastContainer (portal)
+```
+
+Page transitions use Framer Motion's `AnimatePresence` with `mode="wait"` for iOS-style push/pop slides.
