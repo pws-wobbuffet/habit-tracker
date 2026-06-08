@@ -1,70 +1,258 @@
 ---
 title: Architecture
+sidebar:
+  order: 3
 draft: false
-description: Data model, storage backends, and state management.
+description: Data model, project structure, storage backends, state management, and the app shell.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Stack
+
+| Concern         | Library                   | Version |
+| --------------- | ------------------------- | ------- |
+| Build           | Vite                      | 6       |
+| UI              | React                     | 19      |
+| Language        | TypeScript                | 5.8     |
+| Styling         | Tailwind CSS              | 4       |
+| Animation       | Framer Motion             | 12      |
+| State           | Zustand                   | 5       |
+| Persistence     | idb (IndexedDB)           | 8       |
+| Routing         | React Router              | 7       |
+| PWA             | vite-plugin-pwa (Workbox) | 0.21    |
+| Runtime         | bun                       | 1.3     |
+| Package manager | pnpm                      | 11      |
+
 ---
 
 ## Data model
 
-Three core types in `src/types/index.ts`:
+Defined in `src/types/index.ts`.
 
 ```ts
 type Schedule = 'daily' | 'weekly' | { days: number[] }
+//                                     days: 0=Sun, 1=Mon, ..., 6=Sat
 
 interface Habit {
-  id
-  name
-  icon
-  schedule
-  isFavorite
-  createdAt
+  id: string
+  name: string
+  icon: string // emoji
+  schedule: Schedule
+  isFavorite: boolean
+  createdAt: string // "YYYY-MM-DD"
 }
+
 interface Completion {
-  id
-  habitId
-  date
-  note?
-  voiceMemoUrl?
+  id: string
+  habitId: string
+  date: string // "YYYY-MM-DD"
+  note?: string
+  voiceMemoUrl?: string
 }
+
 interface UserProfile {
-  name
-  joinDate
+  name: string
+  joinDate: string // "YYYY-MM-DD"
   themeMode: 'light' | 'dark'
 }
 ```
 
-## Storage backends
+All dates are stored as `"YYYY-MM-DD"` strings. This makes sorting and comparison trivial (string comparison works correctly for ISO dates) and avoids timezone issues with `Date` objects.
 
-The `StorageBackend` interface (`src/storage/types.ts`) abstracts all persistence. Pick a backend with the `VITE_STORAGE_BACKEND` env var:
+---
 
-| Backend             | Value         | Notes                             |
-| ------------------- | ------------- | --------------------------------- |
-| IndexedDB (default) | `idb`         | Offline-first, no server          |
-| SQLite WASM         | `sqlite-wasm` | Browser-embedded, OPFS-backed     |
-| Remote REST         | `remote`      | Requires the `server/` Bun server |
+## Storage layer
 
-Copy `.env.example` to `.env` and set the backend before starting.
+The storage layer is fully decoupled from the UI via an interface (`src/storage/types.ts`):
+
+```ts
+interface StorageBackend {
+  getHabits(): Promise<Habit[]>
+  putHabit(habit: Habit): Promise<void>
+  deleteHabit(id: string): Promise<void>
+  getCompletions(filter?: CompletionFilter): Promise<Completion[]>
+  putCompletion(completion: Completion): Promise<void>
+  deleteCompletion(id: string): Promise<void>
+  getProfile(): Promise<UserProfile | null>
+  putProfile(profile: UserProfile): Promise<void>
+}
+
+interface CompletionFilter {
+  habitId?: string
+  date?: string
+}
+```
+
+`src/storage/index.ts` exports a module-level `backend` singleton. It reads `VITE_STORAGE_BACKEND` at startup and returns the matching implementation:
+
+| `VITE_STORAGE_BACKEND` | Class               | File                     |
+| ---------------------- | ------------------- | ------------------------ |
+| `idb` (default)        | `IDBBackend`        | `storage/idb.ts`         |
+| `sqlite-wasm`          | `SQLiteWasmBackend` | `storage/sqlite-wasm.ts` |
+| `remote`               | `RemoteBackend`     | `storage/remote.ts`      |
+
+### IndexedDB backend (`storage/idb.ts`)
+
+Uses the `idb` library. Three object stores:
+
+| Store         | Key  | Indexes                                |
+| ------------- | ---- | -------------------------------------- |
+| `habits`      | `id` | --                                     |
+| `completions` | `id` | `by-habit`, `by-date`, `by-habit-date` |
+| `profile`     | `id` | --                                     |
+
+The database opens lazily (first access) and caches the handle. IDB version is `1`; no migration logic is needed for new optional fields since IDB stores full JS objects.
+
+### Remote backend (`storage/remote.ts`)
+
+An HTTP client that talks to the optional Bun server in `server/`. All calls map directly to REST routes:
+
+```
+GET    /habits          -> getHabits()
+PUT    /habits/:id      -> putHabit()
+DELETE /habits/:id      -> deleteHabit()
+GET    /completions     -> getCompletions()  (with ?habitId= and ?date= params)
+PUT    /completions/:id -> putCompletion()
+DELETE /completions/:id -> deleteCompletion()
+GET    /profile         -> getProfile()
+PUT    /profile         -> putProfile()
+```
+
+Requires `VITE_API_URL` to be set at build time.
+
+### Adding a custom backend
+
+Implement `StorageBackend` from `src/storage/types.ts`, then register it in the factory in `src/storage/index.ts`:
+
+```ts
+case 'my-backend':
+  return new MyBackend()
+```
+
+No other changes are needed -- all stores and hooks use the `backend` singleton.
+
+---
 
 ## State management
 
-Zustand stores (`src/store/`) hold all in-memory state. Each store hydrates from the active backend on startup and writes through on every mutation. No Zustand `persist` middleware — stores write individual records rather than serializing the whole state.
+Four Zustand stores in `src/store/`:
 
-```
-main.tsx
-  └─ hydrate all stores in parallel (Promise.all)
-     └─ render <App />
+| File             | What it holds                            | Persisted         |
+| ---------------- | ---------------------------------------- | ----------------- |
+| `habits.ts`      | All habits, hydration state              | Yes (via backend) |
+| `completions.ts` | All completions, hydration state         | Yes (via backend) |
+| `profile.ts`     | User profile                             | Yes (via backend) |
+| `ui.ts`          | Active toast list, active sheet habit ID | No (ephemeral)    |
+
+### Hydration pattern
+
+Every persistent store exposes a `hydrate()` action. `main.tsx` calls all three in parallel on startup:
+
+```ts
+await Promise.all([
+  useHabitsStore.getState().hydrate(),
+  useCompletionsStore.getState().hydrate(),
+  useProfileStore.getState().hydrate(),
+])
+// then render <App />
 ```
 
-## Component structure
+Mutations write through to the backend and update local state optimistically. There is no Zustand `persist` middleware -- individual records are written, not the entire store.
+
+### Selecting from stores
+
+Subscribe to the minimal slice to avoid unnecessary re-renders:
+
+```ts
+// Good: re-renders only when `habits` changes
+const habits = useHabitsStore((s) => s.habits)
+
+// Also fine: action references are stable
+const addHabit = useHabitsStore((s) => s.addHabit)
+```
+
+---
+
+## App shell and routing
+
+`src/App.tsx` is the root component. It renders inside `src/main.tsx` after hydration.
 
 ```
 App
-  IPhoneFrame (desktop shell)
+  IPhoneFrame
+    StatusBar
+    AnimatePresence (mode="wait")
+      Route /                -> TodayScreen
+      Route /create          -> HabitCreatorScreen
+      Route /calendar        -> CalendarScreen
+      Route /analytics       -> AnalyticsScreen
+      Route /achievements    -> AchievementsScreen
+      Route /settings        -> SettingsScreen
+      Route /habit/:id       -> HabitDetailScreen
     BottomNav
-    AnimatePresence (page transitions)
-      TodayScreen | CalendarScreen | ...
-    HabitSheet (portal, outside scroll)
-    ToastContainer (portal)
+    HabitSheet  (portal, rendered when activeHabitId != null)
+    ToastContainer  (portal, fixed position)
 ```
 
-Page transitions use Framer Motion's `AnimatePresence` with `mode="wait"` for iOS-style push/pop slides.
+### Page transitions
+
+Each screen wraps its root element with a Framer Motion variant:
+
+```ts
+const PAGE = {
+  initial: { x: '100%', opacity: 0 },
+  animate: { x: 0, opacity: 1 },
+  exit: { x: '-30%', opacity: 0 },
+  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+}
+// applied as <m.div {...PAGE}>
+```
+
+`AnimatePresence mode="wait"` ensures the exit animation finishes before the next screen mounts.
+
+### IPhoneFrame
+
+On screens wider than the `md` breakpoint, `IPhoneFrame` renders a 390x844 device shell with a simulated Dynamic Island, giving the app a "demo on desktop" feel. On actual mobile devices the frame is transparent and the app fills the viewport.
+
+---
+
+## PWA
+
+Configuration lives in `vite.config.ts` under `VitePWA(...)`.
+
+- **Strategy**: `generateSW` -- Workbox generates the service worker at build time
+- **Update**: `registerType: 'autoUpdate'` -- new SW activates immediately
+- **Precache**: all JS, CSS, HTML, icons, and woff2 fonts
+- **Runtime cache**: Google Fonts stylesheets (`StaleWhileRevalidate`) and font files (`CacheFirst`, 1-year TTL)
+- **Minification**: disabled (`minify: false`) to avoid terser compatibility issues on non-Node runtimes
+
+`index.html` includes the full set of Apple-specific meta tags:
+
+```html
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+```
+
+`viewport-fit=cover` is required for `env(safe-area-inset-*)` to work on notched devices. `StatusBar` and `BottomNav` pad themselves using these insets.
+
+---
+
+## Styling
+
+Tailwind CSS 4 is configured via `@theme` blocks in `src/styles/globals.css` rather than a JS config file. The custom palette:
+
+| Token        | Value     | Use                     |
+| ------------ | --------- | ----------------------- |
+| `parchment`  | `#f5f2ec` | App background          |
+| `surface`    | `#fffef9` | Card backgrounds        |
+| `accent`     | `#c17a3a` | Primary accent color    |
+| `green`      | `#3a8a5a` | Completed state         |
+| `text`       | `#2d2a24` | Body text               |
+| `muted`      | `#9a9080` | Secondary text          |
+| `dark-strip` | `#1e1b16` | SummaryStrip background |
+
+Fonts are loaded from Google Fonts: **Fraunces** (display/headings) and **DM Sans** (body).
+
+The `.scrollable` utility class applies `-webkit-overflow-scrolling: touch` for momentum scrolling on iOS.

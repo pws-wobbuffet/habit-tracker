@@ -1,0 +1,139 @@
+---
+title: Screens
+sidebar:
+  order: 4
+draft: false
+description: Every screen in the app, its route, file location, and what it renders.
+---
+
+Each screen lives in its own folder under `src/screens/`. The route is registered in `src/App.tsx`. All screens wrap their root element in a Framer Motion `<m.div>` with shared page-transition variants.
+
+---
+
+## Today (`/`)
+
+**File:** `src/screens/today/TodayScreen.tsx`
+
+The main dashboard. Shows habits due today, the week strip, and overall progress.
+
+### Component tree
+
+```
+TodayScreen
+  StatusBar
+  [scrollable area]
+    GreetingHeader     -- time-of-day greeting + rotating motivational quote
+    SummaryStrip       -- dark banner with ProgressRing and StreakBadge
+    WeekStrip          -- 7-day selector (Mon to Sun)
+    HabitList          -- today's scheduled habits; empty state if none
+```
+
+### Subcomponents
+
+| File                 | What it renders                                                                                |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `GreetingHeader.tsx` | "Good morning", today's date, a rotating motto keyed to the day                                |
+| `SummaryStrip.tsx`   | Dark strip container for the ring and streak                                                   |
+| `ProgressRing.tsx`   | SVG circle (`r=45`, `stroke-dasharray=283`); `strokeDashoffset` animates via Framer spring     |
+| `StreakBadge.tsx`    | "🔥 N day streak" label                                                                        |
+| `WeekStrip.tsx`      | Row of 7 `DayCell` components; tapping a past/current day toggles all completions for that day |
+| `DayCell.tsx`        | Single day cell: letter, date number, green dot if any completions exist                       |
+| `HabitList.tsx`      | Maps `useTodayHabits()` to `HabitCard`; shows an "Add your first habit" CTA when empty         |
+| `HabitCard.tsx`      | See below                                                                                      |
+
+### HabitCard
+
+`src/screens/today/HabitCard.tsx`
+
+- **Tap**: toggles today's completion (via `useToggleCompletion`)
+- **Long-press (500 ms)**: opens the `HabitSheet` for this habit (via `useUIStore.openSheet`)
+- **Completion state**: green background, strikethrough name, checkmark, animated sweep
+- **Icon bounce**: Framer `scale: [1, 1.25, 1]` on completion
+- **Favorite star**: `FavoriteStar` in the trailing position; tap stops propagation and calls `toggleFavorite`
+- Shows: habit icon, name, `ScheduleLabel`, `StreakChip`
+
+---
+
+## Habit Creator (`/create`)
+
+**File:** `src/screens/creator/HabitCreatorScreen.tsx`
+
+Form for adding a new habit.
+
+- Name text input
+- Icon picker: 25-emoji grid (`IconPicker`); selected icon highlighted
+- Schedule selector: "Every day" or "Weekly (Mon)"
+- On submit: creates a `Habit` with a fresh `crypto.randomUUID()` ID, `createdAt: todayStr()`, then navigates to `/`
+
+---
+
+## Calendar (`/calendar`)
+
+**File:** `src/screens/calendar/CalendarScreen.tsx`
+
+Year-at-a-glance heatmap of all completions across all habits.
+
+- Uses `HeatmapGrid` with a `countsByDate` map built from `useCompletionsStore`
+- Intensity: 0 completions = empty; 1 = light; 2 = medium; 3 = strong; 4+ = darkest accent
+
+---
+
+## Analytics (`/analytics`)
+
+**File:** `src/screens/analytics/AnalyticsScreen.tsx`
+
+Summary statistics for the current user:
+
+| Stat                  | Source                              |
+| --------------------- | ----------------------------------- |
+| Today's progress (%)  | `useTodayProgress()`                |
+| Current streak (days) | `useOverallStreak()`                |
+| Total habits          | `useHabitsStore` length             |
+| Active days           | distinct dates in completions store |
+
+Includes a "Detailed charts coming soon" placeholder section for future expansion.
+
+---
+
+## Achievements (`/achievements`)
+
+**File:** `src/screens/achievements/AchievementsScreen.tsx`
+
+Five milestone badges. Each badge has a condition evaluated from live store data:
+
+| Badge        | Condition                              |
+| ------------ | -------------------------------------- |
+| First Step   | At least 1 total completion            |
+| Week Warrior | Current streak >= 7 days               |
+| Iron Will    | Current streak >= 30 days              |
+| Dedicated    | 10 or more completions on a single day |
+| Centurion    | 100 or more total completions          |
+
+Unlocked badges are shown in full color with a green checkmark. Locked badges are grayscale.
+
+---
+
+## Settings (`/settings`)
+
+**File:** `src/screens/settings/SettingsScreen.tsx`
+
+- **Name**: editable text input; saved to `UserProfile.name` via `useProfileStore.updateProfile`
+- **Dark mode toggle**: rendered but disabled ("coming soon")
+- **Join date**: read-only display
+- **Save button**: writes profile to the active storage backend
+
+---
+
+## Habit Detail (`/habit/:id`)
+
+**File:** `src/screens/detail/HabitDetailScreen.tsx`
+
+Full view for a single habit.
+
+- Header: back button, habit icon, name, schedule label
+- Stats row: current streak, total completion count
+- Completion history: scrollable list, reverse-sorted by date, showing date and any note
+- **Delete button**: calls `deleteHabit(id)` and navigates to `/`
+- Shows a 404 message if the habit ID is not found in the store
+
+This screen is also reachable from `CompletionLogTab` inside the `HabitSheet`.

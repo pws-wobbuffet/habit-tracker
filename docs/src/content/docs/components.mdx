@@ -1,0 +1,186 @@
+---
+title: Components
+sidebar:
+  order: 5
+draft: false
+description: Reference for every shared component in src/components/.
+---
+
+Shared components live in `src/components/` grouped into four subdirectories. Screen-specific subcomponents (like `HabitCard`) live alongside their screen in `src/screens/`.
+
+---
+
+## Layout
+
+### `IPhoneFrame`
+
+**File:** `src/components/layout/IPhoneFrame.tsx`
+
+Wraps the entire app. On screens wider than Tailwind's `md` breakpoint it renders a 390x844 device shell with a Dynamic Island notch, giving the app a polished "preview on desktop" appearance. On actual mobile devices the wrapper is transparent and the app fills the viewport natively.
+
+```tsx
+<IPhoneFrame>{children}</IPhoneFrame>
+```
+
+### `StatusBar`
+
+**File:** `src/components/layout/StatusBar.tsx`
+
+Renders the iOS-style top bar: current time (live), signal dots, WiFi icon, and battery icon. Uses inline SVGs; no icon library required.
+
+Pads itself using `env(safe-area-inset-top)` so it sits correctly below the Dynamic Island on notched devices. The padding is exposed as `--safe-top` in `globals.css`.
+
+### `BottomNav`
+
+**File:** `src/components/layout/BottomNav.tsx`
+
+Five-tab navigation bar with `NavLink` from React Router. Tabs: Today, Calendar, Stats, Awards, Settings. Each tab has a custom inline SVG icon and a label.
+
+The active tab is highlighted using the `accent` color via NavLink's `isActive` state. Pads its bottom with `env(safe-area-inset-bottom)` plus 8 px.
+
+---
+
+## Sheets
+
+The sheet pattern is: `HabitSheet` (logic + content) wraps `BottomSheet` (drag-to-dismiss animation). Both are rendered as portals outside the scroll container in `App.tsx`.
+
+### `BottomSheet`
+
+**File:** `src/components/sheets/BottomSheet.tsx`
+
+**Props:**
+
+```ts
+{ onClose: () => void; children: ReactNode }
+```
+
+A drag-to-dismiss bottom sheet built on Framer Motion:
+
+- Slides up from the bottom (`y: '100%'` to `y: 0`)
+- Draggable on the `y` axis; snaps closed if dragged down more than 80 px or with velocity above 300 px/s
+- Semi-transparent backdrop; tapping it calls `onClose`
+- Shows a handle bar at the top
+
+### `HabitSheet`
+
+**File:** `src/components/sheets/HabitSheet.tsx`
+
+**Props:**
+
+```ts
+{
+  habitId: string
+}
+```
+
+Wraps `BottomSheet` and renders three tabs for the selected habit:
+
+| Tab   | Component          | What it does                                       |
+| ----- | ------------------ | -------------------------------------------------- |
+| Note  | `TextNoteTab`      | Add / view text notes on completions               |
+| Voice | `VoiceMemoTab`     | Record and play back audio memos                   |
+| Log   | `CompletionLogTab` | Browse all past completions; link to detail screen |
+
+**`TextNoteTab`** (`sheets/tabs/TextNoteTab.tsx`): textarea to save a text note. Shows the last 10 notes with their dates. Prevents duplicate same-day completions.
+
+**`VoiceMemoTab`** (`sheets/tabs/VoiceMemoTab.tsx`): uses `MediaRecorder` to record audio. Clips are stored in local component state (not persisted to the backend yet). Shows a timer while recording and a list of recordings with their durations. Handles missing microphone permission gracefully.
+
+**`CompletionLogTab`** (`sheets/tabs/CompletionLogTab.tsx`): reverse-sorted completion history. A "View full history" button navigates to `/habit/:id` and closes the sheet.
+
+---
+
+## UI
+
+### `StreakChip`
+
+**File:** `src/components/ui/StreakChip.tsx`
+
+**Props:**
+
+```ts
+{ streak: number; size?: 'sm' | 'md' }
+```
+
+Renders `🔥 {streak}` in a small accent-colored pill. Returns `null` when `streak` is 0, so callers never need to conditionally render it.
+
+### `FavoriteStar`
+
+**File:** `src/components/ui/FavoriteStar.tsx`
+
+**Props:**
+
+```ts
+{ active: boolean; onToggle: () => void }
+```
+
+A tap-animated star button (Framer Motion `whileTap: { scale: 0.8 }`). Renders a filled star when `active`, outline when not. Calls `event.stopPropagation()` so tapping it does not trigger the parent card's click handler.
+
+### `ScheduleLabel`
+
+**File:** `src/components/ui/ScheduleLabel.tsx`
+
+**Props:**
+
+```ts
+{
+  schedule: Schedule
+}
+```
+
+Converts a `Schedule` value to a human-readable label:
+
+- `'daily'` → "Every day"
+- `'weekly'` → "Weekly"
+- `{ days: [1, 3, 5] }` → "Mon, Wed, Fri"
+
+### `Toast`
+
+**File:** `src/components/ui/Toast.tsx`
+
+**Props:**
+
+```ts
+{ toast: Toast; onDismiss: (id: string) => void }
+```
+
+A single toast notification. Color-coded by type:
+
+- `success` → green
+- `info` → text color (neutral)
+- `error` → red-600
+
+Clickable to dismiss. Animated via Framer Motion layout.
+
+### `ToastContainer`
+
+**File:** `src/components/ui/ToastContainer.tsx`
+
+No props. Reads `toasts` from `useUIStore` and renders each as a `Toast`. Fixed position at the bottom of the viewport, above `BottomNav`, respecting the safe area bottom inset. Uses `AnimatePresence` with `mode="popLayout"` for smooth add/remove animations.
+
+---
+
+## Charts
+
+### `HeatmapGrid`
+
+**File:** `src/components/charts/HeatmapGrid.tsx`
+
+**Props:**
+
+```ts
+{
+  countsByDate: Record<string, number>
+}
+```
+
+A year-view heatmap. Renders 12 columns (one per month), each with cells for every calendar day. Cell intensity is mapped from the completion count:
+
+| Count | CSS class           |
+| ----- | ------------------- |
+| 0     | Empty (border only) |
+| 1     | `bg-accent/20`      |
+| 2     | `bg-accent/40`      |
+| 3     | `bg-accent/70`      |
+| 4+    | `bg-accent`         |
+
+Future dates are rendered as empty. Each cell shows the day number. Used by `CalendarScreen`.

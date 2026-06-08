@@ -1,49 +1,64 @@
 ---
-title: Getting Started
+title: Habit Tracker
+sidebar:
+  order: 1
 draft: false
-description: Install and use the Habit Tracker PWA.
+description: A mobile-first PWA for building daily habits. Offline, installable, iOS-native.
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components'
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
 
-**Habit Tracker** is a mobile-first PWA for tracking daily habits. It works offline, installs to your home screen, and feels like a native iOS app.
+**Habit Tracker** is an open-source, mobile-first progressive web app for tracking daily and weekly habits. It runs entirely in the browser, installs to your home screen, and is designed to feel like a native iOS app.
 
 <CardGrid>
-  <Card title="Offline-first" icon="seti:db">
-    All data lives in your browser (IndexedDB). No account, no cloud, no data leaves your device.
+  <Card title="Offline-first" icon="open-book">
+    All data lives in IndexedDB in your browser. No account, no server, no data leaves your device
+    by default.
   </Card>
-  <Card title="Installable" icon="seti:mobile">
-    Add to your iPhone or Android home screen directly from the browser.
+  <Card title="Installable" icon="star">
+    Add to your iPhone or Android home screen via Safari or Chrome. Opens in standalone mode with no
+    browser chrome.
   </Card>
-  <Card title="Pluggable storage" icon="open-book">
-    Start with the default IndexedDB backend or switch to SQLite WASM or a remote REST server.
+  <Card title="Pluggable storage" icon="setting">
+    Start with IndexedDB. Switch to SQLite WASM or a remote REST server via a single environment
+    variable.
+  </Card>
+  <Card title="MIT licensed" icon="github">
+    Clone, fork, and self-host freely. No telemetry, no subscriptions.
   </Card>
 </CardGrid>
 
-## Installing as a PWA
+## Features
 
-### iOS (Safari)
+- **Today view** -- see habits due today, mark them done, track your week at a glance
+- **Habit creator** -- pick a name, emoji icon, and a daily or day-of-week schedule
+- **Streaks** -- per-habit and overall streaks based on consecutive-day completion logic
+- **Completion notes** -- attach a text note to any completion via the bottom sheet
+- **Voice memos** -- record audio directly on any completion entry
+- **Calendar heatmap** -- year view showing completion intensity by date
+- **Analytics** -- lifetime totals, streak summary, and active day count
+- **Achievements** -- milestone badges for streaks, totals, and consistency
+- **Settings** -- display name and theme preferences
 
-1. Open the app URL in **Safari** (not Chrome).
-2. Tap the **Share** button (square with arrow).
-3. Tap **Add to Home Screen**.
-4. Tap **Add**.
+## Where to start
 
-The app will open in standalone mode with no browser chrome.
-
-### Android (Chrome)
-
-1. Open the app URL in **Chrome**.
-2. Tap the menu (three dots) and choose **Add to Home screen**.
-3. Tap **Add**.
-
-## Running locally
-
-```sh
-git clone https://github.com/pws-wobbuffet/habit-tracker
-cd habit-tracker
-pnpm install
-bun run dev
-```
-
-Open `http://localhost:5173` in your browser.
+<LinkCard
+  title="Getting Started"
+  href="/habit-tracker/getting-started/"
+  description="Install the PWA or run the app locally as a developer."
+/>
+<LinkCard
+  title="Architecture"
+  href="/habit-tracker/architecture/"
+  description="Data model, stores, routing, and project structure."
+/>
+<LinkCard
+  title="Screens Reference"
+  href="/habit-tracker/screens/"
+  description="Every screen: route, file, and what it renders."
+/>
+<LinkCard
+  title="Self-Hosting"
+  href="/habit-tracker/self-hosting/"
+  description="Build and serve on your own infrastructure."
+/>

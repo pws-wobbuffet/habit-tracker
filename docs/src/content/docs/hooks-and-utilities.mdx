@@ -1,0 +1,131 @@
+---
+title: Hooks and Utilities
+sidebar:
+  order: 6
+draft: false
+description: Custom React hooks and pure utility functions in src/hooks/ and src/lib/.
+---
+
+## Custom hooks (`src/hooks/`)
+
+### `useTodayHabits`
+
+**File:** `src/hooks/useHabits.ts`
+
+```ts
+function useTodayHabits(): Habit[]
+```
+
+Returns habits that are scheduled for today, sorted: favorites first, then alphabetically by name. Uses `isScheduledOn()` from `src/lib/schedule.ts` to filter.
+
+### `useToggleCompletion`
+
+**File:** `src/hooks/useCompletions.ts`
+
+```ts
+function useToggleCompletion(): (habitId: string, date?: string) => Promise<void>
+```
+
+Returns a function that adds or removes a completion. If a completion already exists for the given habit + date, it removes it; otherwise it creates one with a new UUID. Defaults `date` to today. Shows a success toast after toggling.
+
+### `useTodayProgress`
+
+**File:** `src/hooks/useProgress.ts`
+
+```ts
+function useTodayProgress(): { completed: number; total: number; percent: number }
+```
+
+Returns the count of habits completed today vs. total habits due today, plus a 0-100 percent. Used by `ProgressRing` and `AnalyticsScreen`.
+
+### `useHabitStreak`
+
+**File:** `src/hooks/useProgress.ts`
+
+```ts
+function useHabitStreak(habitId: string): number
+```
+
+Returns the current streak (consecutive completed days) for a single habit. A streak starting yesterday (with no completion today) is still counted.
+
+### `useOverallStreak`
+
+**File:** `src/hooks/useProgress.ts`
+
+```ts
+function useOverallStreak(): number
+```
+
+Returns a streak across all habits combined. Any completion on a given day counts as "the day was active." Used in `SummaryStrip` and `AnalyticsScreen`.
+
+### `useLongPress`
+
+**File:** `src/hooks/useLongPress.ts`
+
+```ts
+function useLongPress(callback: () => void, delay?: number): PointerEventHandlers
+```
+
+Returns `onPointerDown`, `onPointerUp`, `onPointerMove`, and `onPointerLeave` handlers. After `delay` ms (default 500 ms) with no significant pointer movement, fires `callback` and triggers `navigator.vibrate(40)` if available. Movement cancels the timer.
+
+Used on `HabitCard` to distinguish a tap (toggle completion) from a long-press (open sheet).
+
+### `useToast`
+
+**File:** `src/hooks/useToast.ts`
+
+```ts
+function useToast(): (message: string, type?: 'success' | 'info' | 'error') => void
+```
+
+Convenience wrapper that returns `pushToast` from `useUIStore`. Toasts auto-dismiss after 2.5 seconds.
+
+---
+
+## Utilities (`src/lib/`)
+
+### Date utilities (`lib/dates.ts`)
+
+| Export              | Signature                      | Description                                              |
+| ------------------- | ------------------------------ | -------------------------------------------------------- |
+| `todayStr`          | `() => string`                 | Today as `"YYYY-MM-DD"`                                  |
+| `formatDate`        | `(d: Date) => string`          | Date object to `"YYYY-MM-DD"`                            |
+| `parseDate`         | `(s: string) => Date`          | `"YYYY-MM-DD"` to local midnight `Date`                  |
+| `isToday`           | `(dateStr: string) => boolean` | True if `dateStr` equals today                           |
+| `isPast`            | `(dateStr: string) => boolean` | True if `dateStr` is before today                        |
+| `getWeekDays`       | `() => Date[]`                 | 7 dates Mon-Sun for the week containing today            |
+| `dayLetter`         | `(d: Date) => string`          | Single letter: `S`, `M`, `T`, `W`, `T`, `F`, `S`         |
+| `formatDisplayDate` | `(d: Date) => string`          | `"Monday, Jun 9"`                                        |
+| `getGreeting`       | `() => string`                 | `"Good morning"` / `"Good afternoon"` / `"Good evening"` |
+
+All dates in the app are `"YYYY-MM-DD"` strings. Lexicographic string comparison works correctly for this format.
+
+### Schedule utility (`lib/schedule.ts`)
+
+```ts
+function isScheduledOn(schedule: Schedule, date: string): boolean
+```
+
+Returns `true` if the habit is due on the given date:
+
+- `'daily'`: always true
+- `'weekly'`: true only on Monday (day 1)
+- `{ days: number[] }`: true if `date`'s day-of-week is in the `days` array
+
+### Streak utility (`lib/streaks.ts`)
+
+```ts
+function computeStreak(dates: string[]): number
+```
+
+Given an array of `"YYYY-MM-DD"` completion dates (any order, may have duplicates), returns the current streak length. Counts consecutive days backward from today; if today has no completion, it starts counting from yesterday instead. Returns 0 if there is no completion in the last two days.
+
+Covered by unit tests in `src/lib/streaks.test.ts`.
+
+### Seed data (`lib/seeds.ts`)
+
+```ts
+const SEEDS: { habits: Habit[]; completions: Completion[] } | null
+```
+
+Available only in development (`import.meta.env.DEV`). Exports 4 sample habits with 14 days of randomized past completions. `main.tsx` writes these to the backend when the store is empty on first launch.

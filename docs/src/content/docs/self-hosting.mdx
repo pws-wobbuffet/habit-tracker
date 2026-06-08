@@ -1,71 +1,136 @@
 ---
 title: Self-Hosting
+sidebar:
+  order: 8
 draft: false
-description: Build and serve the Habit Tracker on your own infrastructure.
+description: Build and serve the Habit Tracker on your own server or static host.
 ---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components'
 
 ## Build
 
 ```sh
+git clone https://github.com/pws-wobbuffet/habit-tracker
+cd habit-tracker
 pnpm install
 bun run build
 ```
 
-The production files land in `dist/`. It is a static site (HTML, CSS, JS) and can be served by any HTTP server.
+The production files land in `dist/`. This is a standard static site (HTML, CSS, JS, icons, a service worker file). Any HTTP server that can serve static files works.
+
+### Environment variables
+
+Configure storage before building. Copy `.env.example` to `.env` and set the relevant values:
+
+```sh
+cp .env.example .env
+```
+
+| Variable               | Required                      | Description                       |
+| ---------------------- | ----------------------------- | --------------------------------- |
+| `VITE_STORAGE_BACKEND` | No (defaults to `idb`)        | `idb`, `sqlite-wasm`, or `remote` |
+| `VITE_API_URL`         | Only when backend is `remote` | Base URL of your backend server   |
+
+<Aside type="caution">
+  `VITE_*` variables are inlined at build time. Changing them requires a full rebuild.
+</Aside>
+
+---
 
 ## Serving the static files
 
-The only special requirements:
+Two requirements for the web server:
 
-- Serve `sw.js` with `Cache-Control: no-cache, no-store` so the service worker always updates.
-- Redirect all routes to `index.html` (SPA fallback).
+1. **SPA fallback**: all routes must serve `index.html` (the app handles routing client-side).
+2. **Service worker cache headers**: `sw.js` must be served with `Cache-Control: no-cache` so the service worker always fetches a fresh copy on reload.
 
-### nginx example
+<Tabs>
+  <TabItem label="nginx">
+    ```nginx
+    server {
+        listen 80;
+        server_name your-domain.com;
+        root /path/to/dist;
+        index index.html;
 
-```nginx
-server {
-    listen 80;
-    root /path/to/dist;
-    index index.html;
+        location = /sw.js {
+            add_header Cache-Control "no-cache, no-store, must-revalidate";
+        }
 
-    location = /sw.js {
-        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
     }
+    ```
 
-    location / {
-        try_files $uri $uri/ /index.html;
+  </TabItem>
+  <TabItem label="Caddy">
+    ```text
+    your-domain.com {
+        root * /path/to/dist
+        encode gzip
+
+        @sw path /sw.js
+        header @sw Cache-Control "no-cache, no-store, must-revalidate"
+
+        handle_errors {
+            rewrite * /index.html
+        }
+        file_server
     }
-}
-```
+    ```
 
-### Caddy example
+  </TabItem>
+  <TabItem label="serve (quick test)">
+    ```sh
+    # Install serve globally (one-time)
+    bun add -g serve
 
-```caddyfile
-example.com {
-    root * /path/to/dist
-    encode gzip
-    handle_errors {
-        rewrite * /index.html
-    }
-    file_server
-}
-```
+    # Serve the dist folder
+    serve dist -s
+    ```
 
-## Optional backend server (for remote storage)
+    The `-s` flag enables single-page app mode (fallback to `index.html`).
 
-If you prefer PostgreSQL or SQLite file storage over the default browser-side IndexedDB:
+  </TabItem>
+</Tabs>
+
+---
+
+## Optional: backend server
+
+If you want data stored in SQLite or PostgreSQL instead of IndexedDB, run the Bun server from the `server/` directory.
+
+### SQLite (file-based, no extra setup)
 
 ```sh
 cd server
-BACKEND=sqlite bun start        # SQLite file
-BACKEND=postgres DATABASE_URL=postgres://... bun start  # PostgreSQL
+pnpm install
+BACKEND=sqlite bun start
 ```
 
-Then in your frontend `.env`:
+Data is written to `habits.db` in the `server/` directory.
+
+### PostgreSQL
+
+```sh
+cd server
+pnpm install
+BACKEND=postgres DATABASE_URL=postgres://user:pass@host:5432/dbname bun start
+```
+
+The server listens on port `3001`. Then set these in your frontend `.env` before building:
 
 ```
 VITE_STORAGE_BACKEND=remote
 VITE_API_URL=http://your-server:3001
 ```
 
-Rebuild (`bun run build`) after changing `.env`.
+---
+
+## HTTPS and PWA
+
+The full PWA install flow (Add to Home Screen, service worker, offline mode) requires **HTTPS**. A self-signed certificate works on Android but iOS Safari requires a trusted certificate.
+
+For local network hosting, a wildcard certificate from a tool like [mkcert](https://github.com/FiloSottile/mkcert) works well on Android. For public hosting, any ACME-compatible CA (Let's Encrypt via Caddy or Certbot) handles this automatically.

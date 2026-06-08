@@ -1,0 +1,162 @@
+---
+title: Storage Backends
+sidebar:
+  order: 7
+draft: false
+description: How the pluggable storage layer works and how to add a custom backend.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Overview
+
+All persistence goes through the `StorageBackend` interface defined in `src/storage/types.ts`. The active backend is selected via the `VITE_STORAGE_BACKEND` environment variable and exposed as a module-level singleton from `src/storage/index.ts`.
+
+Zustand stores and hooks import `backend` from `src/storage/index.ts` and call its methods directly. They have no knowledge of which implementation is active.
+
+---
+
+## The `StorageBackend` interface
+
+```ts
+interface CompletionFilter {
+  habitId?: string
+  date?: string
+}
+
+interface StorageBackend {
+  // Habits
+  getHabits(): Promise<Habit[]>
+  putHabit(habit: Habit): Promise<void>
+  deleteHabit(id: string): Promise<void>
+
+  // Completions
+  getCompletions(filter?: CompletionFilter): Promise<Completion[]>
+  putCompletion(completion: Completion): Promise<void>
+  deleteCompletion(id: string): Promise<void>
+
+  // Profile
+  getProfile(): Promise<UserProfile | null>
+  putProfile(profile: UserProfile): Promise<void>
+}
+```
+
+`putHabit` and `putCompletion` are upserts (insert or replace by `id`). `getCompletions` accepts an optional filter to scope results by `habitId`, `date`, or both.
+
+---
+
+## IndexedDB (`idb`)
+
+**File:** `src/storage/idb.ts`  
+**Activated by:** `VITE_STORAGE_BACKEND=idb` (default)
+
+Uses the [`idb`](https://github.com/jakearchibald/idb) wrapper library around the browser's built-in IndexedDB API.
+
+**Object stores:**
+
+| Store         | Key path | Indexes                                                                   |
+| ------------- | -------- | ------------------------------------------------------------------------- |
+| `habits`      | `id`     | --                                                                        |
+| `completions` | `id`     | `by-habit` (habitId), `by-date` (date), `by-habit-date` ([habitId, date]) |
+| `profile`     | `id`     | --                                                                        |
+
+The database is opened lazily on first access. The database name is `habit-tracker`, version `1`. Since IndexedDB stores full JS objects, adding new optional fields to a type requires no migration.
+
+<Aside>
+  IndexedDB data is scoped to the browser origin and is not shared between browsers or devices. Use
+  the remote backend if you need multi-device sync.
+</Aside>
+
+---
+
+## SQLite WASM (`sqlite-wasm`)
+
+**File:** `src/storage/sqlite-wasm.ts`  
+**Activated by:** `VITE_STORAGE_BACKEND=sqlite-wasm`
+
+Stub implementation. All methods throw with a message pointing users to the IndexedDB fallback. The `@sqlite.org/sqlite-wasm` package is listed as an optional dependency but the integration is not yet complete.
+
+---
+
+## Remote REST (`remote`)
+
+**File:** `src/storage/remote.ts`  
+**Activated by:** `VITE_STORAGE_BACKEND=remote` + `VITE_API_URL=http://your-server:port`
+
+An HTTP client that maps every `StorageBackend` method to a REST call against the URL set in `VITE_API_URL`.
+
+**Route contract:**
+
+| Method | Path               | Params                      |
+| ------ | ------------------ | --------------------------- |
+| GET    | `/habits`          | --                          |
+| PUT    | `/habits/:id`      | JSON body: `Habit`          |
+| DELETE | `/habits/:id`      | --                          |
+| GET    | `/completions`     | `?habitId=` and/or `?date=` |
+| PUT    | `/completions/:id` | JSON body: `Completion`     |
+| DELETE | `/completions/:id` | --                          |
+| GET    | `/profile`         | --                          |
+| PUT    | `/profile`         | JSON body: `UserProfile`    |
+
+Any HTTP server that implements these routes can be used as the backend. The `server/` directory contains a ready-made Bun implementation.
+
+### The optional Bun server (`server/`)
+
+```
+server/
+  types.ts       Request/response type definitions
+  sqlite.ts      bun:sqlite implementation
+  postgres.ts    pg driver implementation
+  index.ts       Entry point; picks implementation via BACKEND env var
+  package.json   Standalone sub-project
+```
+
+Start with one of:
+
+```sh
+# SQLite (file-based, no extra setup)
+cd server
+BACKEND=sqlite bun start
+
+# PostgreSQL
+BACKEND=postgres DATABASE_URL=postgres://user:pass@host/db bun start
+```
+
+The server listens on port `3001` by default.
+
+---
+
+## Adding a custom backend
+
+1. **Create the implementation file** at `src/storage/my-backend.ts`:
+
+   ```ts
+   import type { StorageBackend, CompletionFilter } from './types'
+   import type { Habit, Completion, UserProfile } from '../types'
+
+   export class MyBackend implements StorageBackend {
+     async getHabits(): Promise<Habit[]> { ... }
+     async putHabit(habit: Habit): Promise<void> { ... }
+     async deleteHabit(id: string): Promise<void> { ... }
+     async getCompletions(filter?: CompletionFilter): Promise<Completion[]> { ... }
+     async putCompletion(completion: Completion): Promise<void> { ... }
+     async deleteCompletion(id: string): Promise<void> { ... }
+     async getProfile(): Promise<UserProfile | null> { ... }
+     async putProfile(profile: UserProfile): Promise<void> { ... }
+   }
+   ```
+
+2. **Register it** in `src/storage/index.ts`:
+
+   ```ts
+   case 'my-backend':
+     return new MyBackend()
+   ```
+
+3. **Document the variable** in `.env.example`:
+
+   ```
+   # VITE_STORAGE_BACKEND=my-backend
+   ```
+
+No changes to stores, hooks, or components are needed.
