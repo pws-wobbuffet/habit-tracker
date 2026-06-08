@@ -1,16 +1,9 @@
 import { useState } from 'react'
-import { m } from 'framer-motion'
 import { useNavigate } from 'react-router'
 import { useHabitsStore } from '../../store/habits'
 import { useUIStore } from '../../store/ui'
 import type { Schedule } from '../../types'
-
-const PAGE = {
-  initial: { x: '100%', opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: '100%', opacity: 0 },
-  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
-}
+import { PageWrapper } from '../../components/layout/PageWrapper'
 
 const ICONS = [
   '🧘',
@@ -69,7 +62,7 @@ export default function HabitCreatorScreen() {
   }
 
   return (
-    <m.div {...PAGE} className="h-full flex flex-col bg-parchment">
+    <PageWrapper className="bg-parchment">
       <div className="flex items-center gap-3 px-5 pt-14 pb-4">
         <button onClick={() => navigate(-1)} className="text-accent text-sm font-medium">
           ← Back
@@ -144,6 +137,6 @@ export default function HabitCreatorScreen() {
           Create habit
         </button>
       </div>
-    </m.div>
+    </PageWrapper>
   )
 }

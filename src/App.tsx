@@ -1,8 +1,8 @@
 import { createPortal } from 'react-dom'
 import { AnimatePresence, LazyMotion, domAnimation } from 'framer-motion'
 import { Route, Routes, useLocation } from 'react-router'
-import { IPhoneFrame } from './components/layout/IPhoneFrame'
 import { BottomNav } from './components/layout/BottomNav'
+import { SideNav } from './components/layout/SideNav'
 import { HabitSheet } from './components/sheets/HabitSheet'
 import { ToastContainer } from './components/ui/ToastContainer'
 import { useUIStore } from './store/ui'
@@ -20,8 +20,9 @@ export default function App() {
 
   return (
     <LazyMotion features={domAnimation}>
-      <IPhoneFrame>
-        <div className="flex flex-col h-full">
+      <div className="flex h-dvh bg-parchment" style={{ paddingTop: 'var(--safe-top)' }}>
+        <SideNav />
+        <div className="flex flex-col flex-1 min-w-0">
           <div className="flex-1 overflow-hidden relative">
             <AnimatePresence mode="wait" initial={false}>
               <Routes location={location} key={location.pathname}>
@@ -37,11 +38,10 @@ export default function App() {
           </div>
           <BottomNav />
         </div>
+      </div>
 
-        {activeHabitId && createPortal(<HabitSheet habitId={activeHabitId} />, document.body)}
-
-        {createPortal(<ToastContainer />, document.body)}
-      </IPhoneFrame>
+      {activeHabitId && createPortal(<HabitSheet habitId={activeHabitId} />, document.body)}
+      {createPortal(<ToastContainer />, document.body)}
     </LazyMotion>
   )
 }

@@ -11,8 +11,7 @@ export function DayCell({ date, onTap }: Props) {
   const dateStr = formatDate(date)
   const today = isToday(dateStr)
   const isFuture = dateStr > formatDate(new Date())
-  const completions = useCompletionsStore((s) => s.getForDate(dateStr))
-  const hasAny = completions.length > 0
+  const hasAny = useCompletionsStore((s) => s.completions.some((c) => c.date === dateStr))
 
   return (
     <m.button

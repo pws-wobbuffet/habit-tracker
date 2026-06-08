@@ -2,13 +2,13 @@ import { defineConfig } from 'astro/config'
 import starlight from '@astrojs/starlight'
 
 export default defineConfig({
-  base: '/habit-tracker',
+  base: '/habitus',
   integrations: [
     starlight({
-      title: 'Habit Tracker',
-      description: 'Mobile-first PWA habit tracker — offline-first, installable, iOS-native feel.',
+      title: 'Habitus',
+      description: 'Mobile-first PWA habit tracker, offline-first, installable, iOS-native feel.',
       social: {
-        github: 'https://github.com/pws-wobbuffet/habit-tracker',
+        github: 'https://github.com/pws-wobbuffet/habitus',
       },
       sidebar: [
         {

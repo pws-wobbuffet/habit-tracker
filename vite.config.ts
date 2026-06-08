@@ -12,9 +12,9 @@ export default defineConfig({
       minify: false,
       includeAssets: ['icons/*.png'],
       manifest: {
-        name: 'Habit Tracker',
-        short_name: 'Habits',
-        description: 'Daily habit tracking — offline-first, installable PWA',
+        name: 'Habitus',
+        short_name: 'Habitus',
+        description: 'Daily habit tracking, offline-first installable PWA',
         theme_color: '#c17a3a',
         background_color: '#f5f2ec',
         display: 'standalone',
@@ -32,6 +32,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        clientsClaim: false,
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html,ico,png,woff2}'],
         runtimeCaching: [

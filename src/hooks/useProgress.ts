@@ -23,10 +23,12 @@ export function useTodayProgress(): { completed: number; total: number; percent:
 }
 
 export function useHabitStreak(habitId: string): number {
-  const completions = useCompletionsStore((s) =>
-    s.completions.filter((c) => c.habitId === habitId).map((c) => c.date),
-  )
-  return computeStreak(completions)
+  return useCompletionsStore((s) => {
+    const dates = s.completions
+      .filter((c) => c.habitId === habitId)
+      .map((c) => c.date)
+    return computeStreak(dates)
+  })
 }
 
 export function useOverallStreak(): number {

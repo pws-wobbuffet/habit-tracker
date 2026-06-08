@@ -1,24 +1,18 @@
-import { m } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router'
 import { useHabitsStore } from '../../store/habits'
 import { useCompletionsStore } from '../../store/completions'
 import { useUIStore } from '../../store/ui'
 import { ScheduleLabel } from '../../components/ui/ScheduleLabel'
 import { useHabitStreak } from '../../hooks/useProgress'
-
-const PAGE = {
-  initial: { x: '100%', opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: '100%', opacity: 0 },
-  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
-}
+import { PageWrapper } from '../../components/layout/PageWrapper'
 
 export default function HabitDetailScreen() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const habit = useHabitsStore((s) => s.habits.find((h) => h.id === id))
   const deleteHabit = useHabitsStore((s) => s.deleteHabit)
-  const completions = useCompletionsStore((s) => s.getForHabit(id ?? ''))
+  const allCompletions = useCompletionsStore((s) => s.completions)
+  const completions = allCompletions.filter((c) => c.habitId === id)
   const pushToast = useUIStore((s) => s.pushToast)
   const streak = useHabitStreak(id ?? '')
 
@@ -40,7 +34,7 @@ export default function HabitDetailScreen() {
   }
 
   return (
-    <m.div {...PAGE} className="h-full flex flex-col bg-parchment">
+    <PageWrapper className="bg-parchment">
       <div className="flex items-center gap-3 px-5 pt-14 pb-4">
         <button onClick={() => navigate(-1)} className="text-accent text-sm font-medium">
           ← Back
@@ -94,6 +88,6 @@ export default function HabitDetailScreen() {
           Delete habit
         </button>
       </div>
-    </m.div>
+    </PageWrapper>
   )
 }

@@ -1,15 +1,7 @@
 import { useState } from 'react'
-import { m } from 'framer-motion'
-import { StatusBar } from '../../components/layout/StatusBar'
 import { useProfileStore } from '../../store/profile'
 import { useUIStore } from '../../store/ui'
-
-const PAGE = {
-  initial: { x: '100%', opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: '-30%', opacity: 0 },
-  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
-}
+import { PageWrapper } from '../../components/layout/PageWrapper'
 
 export default function SettingsScreen() {
   const profile = useProfileStore((s) => s.profile)
@@ -23,8 +15,7 @@ export default function SettingsScreen() {
   }
 
   return (
-    <m.div {...PAGE} className="h-full flex flex-col bg-parchment">
-      <StatusBar />
+    <PageWrapper className="bg-parchment">
       <div className="flex-1 scrollable px-4 pt-4">
         <h1 className="font-display text-2xl font-semibold text-text mb-5">Settings</h1>
 
@@ -51,7 +42,7 @@ export default function SettingsScreen() {
 
           <div className="bg-surface rounded-2xl p-4 text-xs text-muted text-center">
             <p>Joined {profile.joinDate}</p>
-            <p className="mt-1">Habit Tracker — open source</p>
+            <p className="mt-1">Habitus — open source</p>
           </div>
         </div>
       </div>
@@ -64,6 +55,6 @@ export default function SettingsScreen() {
           Save
         </button>
       </div>
-    </m.div>
+    </PageWrapper>
   )
 }

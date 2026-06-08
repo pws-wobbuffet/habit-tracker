@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router'
 import './styles/globals.css'
 import './styles/animations.css'
 import App from './App'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { useHabitsStore } from './store/habits'
 import { useCompletionsStore } from './store/completions'
 import { useProfileStore } from './store/profile'
@@ -30,9 +31,11 @@ async function bootstrap() {
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ErrorBoundary>
     </StrictMode>,
   )
 }

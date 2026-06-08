@@ -1,15 +1,7 @@
-import { m } from 'framer-motion'
-import { StatusBar } from '../../components/layout/StatusBar'
 import { useHabitsStore } from '../../store/habits'
 import { useCompletionsStore } from '../../store/completions'
 import { useTodayProgress, useOverallStreak } from '../../hooks/useProgress'
-
-const PAGE = {
-  initial: { x: '100%', opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: '-30%', opacity: 0 },
-  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
-}
+import { PageWrapper } from '../../components/layout/PageWrapper'
 
 export default function AnalyticsScreen() {
   const habits = useHabitsStore((s) => s.habits)
@@ -20,8 +12,7 @@ export default function AnalyticsScreen() {
   const totalDays = [...new Set(completions.map((c) => c.date))].length
 
   return (
-    <m.div {...PAGE} className="h-full flex flex-col bg-parchment">
-      <StatusBar />
+    <PageWrapper className="bg-parchment">
       <div className="flex-1 scrollable px-4 pt-4">
         <h1 className="font-display text-2xl font-semibold text-text mb-5">Analytics</h1>
 
@@ -37,7 +28,7 @@ export default function AnalyticsScreen() {
           <p>Detailed charts coming soon</p>
         </div>
       </div>
-    </m.div>
+    </PageWrapper>
   )
 }
 

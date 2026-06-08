@@ -24,7 +24,8 @@ export function HabitSheet({ habitId }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('note')
   const closeSheet = useUIStore((s) => s.closeSheet)
   const habit = useHabitsStore((s) => s.habits.find((h) => h.id === habitId))
-  const completions = useCompletionsStore((s) => s.getForHabit(habitId))
+  const allCompletions = useCompletionsStore((s) => s.completions)
+  const completions = allCompletions.filter((c) => c.habitId === habitId)
 
   if (!habit) return null
 
