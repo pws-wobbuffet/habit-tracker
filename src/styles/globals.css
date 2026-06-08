@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-parchment: #f5f2ec;
@@ -30,7 +30,7 @@
 
 button,
 a,
-[role="button"] {
+[role='button'] {
   -webkit-user-select: none;
   user-select: none;
   cursor: pointer;

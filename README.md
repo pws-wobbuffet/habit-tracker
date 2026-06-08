@@ -29,11 +29,11 @@ Open the dev (or production) URL in Safari on iOS, tap Share, then **Add to Home
 
 Copy `.env.example` to `.env` and set `VITE_STORAGE_BACKEND`:
 
-| Value | Description |
-|---|---|
-| `idb` | IndexedDB (default, offline, no server needed) |
-| `sqlite-wasm` | SQLite in the browser via WASM + OPFS |
-| `remote` | HTTP REST -- requires the `server/` Bun backend |
+| Value         | Description                                     |
+| ------------- | ----------------------------------------------- |
+| `idb`         | IndexedDB (default, offline, no server needed)  |
+| `sqlite-wasm` | SQLite in the browser via WASM + OPFS           |
+| `remote`      | HTTP REST -- requires the `server/` Bun backend |
 
 ## Development
 

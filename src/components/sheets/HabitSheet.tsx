@@ -44,9 +44,7 @@ export function HabitSheet({ habitId }: Props) {
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
                 className={`flex-1 py-1.5 text-sm font-medium rounded-lg transition-all ${
-                  activeTab === t.id
-                    ? 'bg-surface shadow text-text'
-                    : 'text-muted'
+                  activeTab === t.id ? 'bg-surface shadow text-text' : 'text-muted'
                 }`}
               >
                 {t.label}

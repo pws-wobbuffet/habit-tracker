@@ -20,9 +20,7 @@ export function WeekStrip() {
       pushToast('Day cleared', 'info')
     } else {
       await Promise.all(
-        habits.map((h) =>
-          addCompletion({ id: crypto.randomUUID(), habitId: h.id, date: dateStr }),
-        ),
+        habits.map((h) => addCompletion({ id: crypto.randomUUID(), habitId: h.id, date: dateStr })),
       )
       pushToast('All habits marked!', 'success')
     }

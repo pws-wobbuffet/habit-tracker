@@ -70,4 +70,6 @@ Bun.serve({
   },
 })
 
-console.log(`Habit Tracker server running on :${process.env.PORT ?? 3001} (${process.env.BACKEND ?? 'sqlite'})`)
+console.log(
+  `Habit Tracker server running on :${process.env.PORT ?? 3001} (${process.env.BACKEND ?? 'sqlite'})`,
+)

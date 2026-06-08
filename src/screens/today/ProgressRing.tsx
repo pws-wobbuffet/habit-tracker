@@ -30,8 +30,12 @@ export function ProgressRing({ percent, completed, total }: Props) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-white font-display font-semibold text-xl leading-none">{percent}%</span>
-        <span className="text-white/60 text-[10px] mt-0.5">{completed}/{total}</span>
+        <span className="text-white font-display font-semibold text-xl leading-none">
+          {percent}%
+        </span>
+        <span className="text-white/60 text-[10px] mt-0.5">
+          {completed}/{total}
+        </span>
       </div>
     </div>
   )

@@ -25,10 +25,7 @@ export function HabitList() {
     <div className="px-4">
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs font-semibold text-muted uppercase tracking-wider">Today's habits</p>
-        <button
-          onClick={() => navigate('/create')}
-          className="text-accent text-xs font-semibold"
-        >
+        <button onClick={() => navigate('/create')} className="text-accent text-xs font-semibold">
           + Add
         </button>
       </div>

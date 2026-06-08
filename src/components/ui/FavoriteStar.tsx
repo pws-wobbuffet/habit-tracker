@@ -9,7 +9,10 @@ export function FavoriteStar({ active, onToggle }: Props) {
   return (
     <m.button
       whileTap={{ scale: 0.8 }}
-      onClick={(e) => { e.stopPropagation(); onToggle() }}
+      onClick={(e) => {
+        e.stopPropagation()
+        onToggle()
+      }}
       className="p-1 -mr-1"
       aria-label={active ? 'Remove from favorites' : 'Add to favorites'}
     >

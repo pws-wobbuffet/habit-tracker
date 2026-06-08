@@ -38,8 +38,7 @@ export default function App() {
           <BottomNav />
         </div>
 
-        {activeHabitId &&
-          createPortal(<HabitSheet habitId={activeHabitId} />, document.body)}
+        {activeHabitId && createPortal(<HabitSheet habitId={activeHabitId} />, document.body)}
 
         {createPortal(<ToastContainer />, document.body)}
       </IPhoneFrame>

@@ -3,11 +3,11 @@ import { formatDisplayDate, getGreeting } from '../../lib/dates'
 import { m } from 'framer-motion'
 
 const MOTTOS = [
-  "Small steps, big changes.",
-  "Consistency is the key.",
-  "One day at a time.",
-  "Build the life you want.",
-  "Progress over perfection.",
+  'Small steps, big changes.',
+  'Consistency is the key.',
+  'One day at a time.',
+  'Build the life you want.',
+  'Progress over perfection.',
 ]
 
 export function GreetingHeader() {

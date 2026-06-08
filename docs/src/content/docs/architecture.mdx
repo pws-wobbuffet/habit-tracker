@@ -11,20 +11,37 @@ Three core types in `src/types/index.ts`:
 ```ts
 type Schedule = 'daily' | 'weekly' | { days: number[] }
 
-interface Habit       { id, name, icon, schedule, isFavorite, createdAt }
-interface Completion  { id, habitId, date, note?, voiceMemoUrl? }
-interface UserProfile { name, joinDate, themeMode: 'light' | 'dark' }
+interface Habit {
+  id
+  name
+  icon
+  schedule
+  isFavorite
+  createdAt
+}
+interface Completion {
+  id
+  habitId
+  date
+  note?
+  voiceMemoUrl?
+}
+interface UserProfile {
+  name
+  joinDate
+  themeMode: 'light' | 'dark'
+}
 ```
 
 ## Storage backends
 
 The `StorageBackend` interface (`src/storage/types.ts`) abstracts all persistence. Pick a backend with the `VITE_STORAGE_BACKEND` env var:
 
-| Backend | Value | Notes |
-|---|---|---|
-| IndexedDB (default) | `idb` | Offline-first, no server |
-| SQLite WASM | `sqlite-wasm` | Browser-embedded, OPFS-backed |
-| Remote REST | `remote` | Requires the `server/` Bun server |
+| Backend             | Value         | Notes                             |
+| ------------------- | ------------- | --------------------------------- |
+| IndexedDB (default) | `idb`         | Offline-first, no server          |
+| SQLite WASM         | `sqlite-wasm` | Browser-embedded, OPFS-backed     |
+| Remote REST         | `remote`      | Requires the `server/` Bun server |
 
 Copy `.env.example` to `.env` and set the backend before starting.
 

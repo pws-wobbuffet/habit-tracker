@@ -8,6 +8,7 @@ labels: bug
 A clear description of what is wrong.
 
 **Steps to reproduce**
+
 1. Go to '...'
 2. Tap on '...'
 3. See error
@@ -19,6 +20,7 @@ What you expected to happen.
 What actually happened.
 
 **Device / browser**
+
 - Device: e.g. iPhone 15 Pro / Samsung Galaxy S24
 - OS: e.g. iOS 17.5 / Android 14
 - Browser: e.g. Safari / Chrome 124

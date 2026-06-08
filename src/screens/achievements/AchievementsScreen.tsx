@@ -19,11 +19,41 @@ interface Achievement {
 }
 
 const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first', icon: '🌱', name: 'First Step', description: 'Complete your first habit', check: (_, t) => t >= 1 },
-  { id: 'week', icon: '🔥', name: 'Week Warrior', description: '7-day streak', check: (s) => s >= 7 },
-  { id: 'month', icon: '💪', name: 'Iron Will', description: '30-day streak', check: (s) => s >= 30 },
-  { id: '10habits', icon: '🎯', name: 'Dedicated', description: 'Complete 10 habits in a day', check: (_, t) => t >= 10 },
-  { id: 'century', icon: '💯', name: 'Centurion', description: '100 total completions', check: (_, t) => t >= 100 },
+  {
+    id: 'first',
+    icon: '🌱',
+    name: 'First Step',
+    description: 'Complete your first habit',
+    check: (_, t) => t >= 1,
+  },
+  {
+    id: 'week',
+    icon: '🔥',
+    name: 'Week Warrior',
+    description: '7-day streak',
+    check: (s) => s >= 7,
+  },
+  {
+    id: 'month',
+    icon: '💪',
+    name: 'Iron Will',
+    description: '30-day streak',
+    check: (s) => s >= 30,
+  },
+  {
+    id: '10habits',
+    icon: '🎯',
+    name: 'Dedicated',
+    description: 'Complete 10 habits in a day',
+    check: (_, t) => t >= 10,
+  },
+  {
+    id: 'century',
+    icon: '💯',
+    name: 'Centurion',
+    description: '100 total completions',
+    check: (_, t) => t >= 100,
+  },
 ]
 
 export default function AchievementsScreen() {

@@ -79,7 +79,10 @@ export function VoiceMemoTab({ habitId: _ }: Props) {
       {clips.length > 0 && (
         <div className="space-y-2 max-h-48 scrollable">
           {clips.map((clip) => (
-            <div key={clip.id} className="flex items-center gap-3 bg-parchment/60 rounded-lg px-3 py-2">
+            <div
+              key={clip.id}
+              className="flex items-center gap-3 bg-parchment/60 rounded-lg px-3 py-2"
+            >
               <audio controls src={clip.url} className="h-8 flex-1" />
               <span className="text-xs text-muted whitespace-nowrap">{fmt(clip.duration)}</span>
             </div>

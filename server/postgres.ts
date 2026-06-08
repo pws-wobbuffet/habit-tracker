@@ -10,7 +10,9 @@ async function getPool() {
     const { Pool } = await import('pg')
     pool = new Pool({ connectionString: process.env.DATABASE_URL })
   }
-  return pool as Awaited<ReturnType<typeof import('pg')['Pool']['prototype']['query']>> & { query: (...args: unknown[]) => Promise<{ rows: unknown[] }> }
+  return pool as Awaited<ReturnType<(typeof import('pg'))['Pool']['prototype']['query']>> & {
+    query: (...args: unknown[]) => Promise<{ rows: unknown[] }>
+  }
 }
 
 export async function getHabits(): Promise<Habit[]> {
@@ -21,9 +23,10 @@ export async function getHabits(): Promise<Habit[]> {
 
 export async function putHabit(habit: Habit): Promise<void> {
   const p = await getPool()
-  await p.query('INSERT INTO habits (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = $2', [
-    habit.id, JSON.stringify(habit),
-  ])
+  await p.query(
+    'INSERT INTO habits (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = $2',
+    [habit.id, JSON.stringify(habit)],
+  )
 }
 
 export async function deleteHabit(id: string): Promise<void> {
@@ -35,9 +38,16 @@ export async function getCompletions(q?: CompletionQuery): Promise<Completion[]>
   const p = await getPool()
   const clauses: string[] = ['1=1']
   const params: string[] = []
-  if (q?.habitId) { clauses.push(`habit_id = $${params.push(q.habitId)}`); }
-  if (q?.date) { clauses.push(`date = $${params.push(q.date)}`); }
-  const { rows } = await p.query(`SELECT data FROM completions WHERE ${clauses.join(' AND ')}`, params)
+  if (q?.habitId) {
+    clauses.push(`habit_id = $${params.push(q.habitId)}`)
+  }
+  if (q?.date) {
+    clauses.push(`date = $${params.push(q.date)}`)
+  }
+  const { rows } = await p.query(
+    `SELECT data FROM completions WHERE ${clauses.join(' AND ')}`,
+    params,
+  )
   return rows.map((r: { data: string }) => JSON.parse(r.data))
 }
 

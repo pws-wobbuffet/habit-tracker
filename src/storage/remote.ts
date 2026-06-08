@@ -3,7 +3,9 @@ import type { CompletionFilter, StorageBackend } from './types'
 
 export class RemoteBackend implements StorageBackend {
   private readonly base: string
-  constructor(base: string) { this.base = base }
+  constructor(base: string) {
+    this.base = base
+  }
 
   private async get<T>(path: string): Promise<T> {
     const res = await fetch(`${this.base}${path}`)
@@ -25,9 +27,15 @@ export class RemoteBackend implements StorageBackend {
     if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`)
   }
 
-  getHabits() { return this.get<Habit[]>('/habits') }
-  putHabit(habit: Habit) { return this.put(`/habits/${habit.id}`, habit) }
-  deleteHabit(id: string) { return this.del(`/habits/${id}`) }
+  getHabits() {
+    return this.get<Habit[]>('/habits')
+  }
+  putHabit(habit: Habit) {
+    return this.put(`/habits/${habit.id}`, habit)
+  }
+  deleteHabit(id: string) {
+    return this.del(`/habits/${id}`)
+  }
 
   getCompletions(filter?: CompletionFilter) {
     const params = new URLSearchParams()
@@ -41,8 +49,14 @@ export class RemoteBackend implements StorageBackend {
     return this.put(`/completions/${completion.id}`, completion)
   }
 
-  deleteCompletion(id: string) { return this.del(`/completions/${id}`) }
+  deleteCompletion(id: string) {
+    return this.del(`/completions/${id}`)
+  }
 
-  getProfile() { return this.get<UserProfile | null>('/profile') }
-  putProfile(profile: UserProfile) { return this.put('/profile', profile) }
+  getProfile() {
+    return this.get<UserProfile | null>('/profile')
+  }
+  putProfile(profile: UserProfile) {
+    return this.put('/profile', profile)
+  }
 }

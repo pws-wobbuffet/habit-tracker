@@ -10,12 +10,28 @@ export class SQLiteWasmBackend implements StorageBackend {
     )
   }
 
-  getHabits(): Promise<Habit[]> { return this._notImpl() }
-  putHabit(_habit: Habit): Promise<void> { return this._notImpl() }
-  deleteHabit(_id: string): Promise<void> { return this._notImpl() }
-  getCompletions(_filter?: CompletionFilter): Promise<Completion[]> { return this._notImpl() }
-  putCompletion(_completion: Completion): Promise<void> { return this._notImpl() }
-  deleteCompletion(_id: string): Promise<void> { return this._notImpl() }
-  getProfile(): Promise<UserProfile | null> { return this._notImpl() }
-  putProfile(_profile: UserProfile): Promise<void> { return this._notImpl() }
+  getHabits(): Promise<Habit[]> {
+    return this._notImpl()
+  }
+  putHabit(_habit: Habit): Promise<void> {
+    return this._notImpl()
+  }
+  deleteHabit(_id: string): Promise<void> {
+    return this._notImpl()
+  }
+  getCompletions(_filter?: CompletionFilter): Promise<Completion[]> {
+    return this._notImpl()
+  }
+  putCompletion(_completion: Completion): Promise<void> {
+    return this._notImpl()
+  }
+  deleteCompletion(_id: string): Promise<void> {
+    return this._notImpl()
+  }
+  getProfile(): Promise<UserProfile | null> {
+    return this._notImpl()
+  }
+  putProfile(_profile: UserProfile): Promise<void> {
+    return this._notImpl()
+  }
 }

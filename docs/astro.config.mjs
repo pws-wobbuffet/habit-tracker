@@ -10,9 +10,7 @@ export default defineConfig({
       social: {
         github: 'https://github.com/pws-wobbuffet/habit-tracker',
       },
-      sidebar: [
-        { label: 'Documentation', autogenerate: { directory: '.' } },
-      ],
+      sidebar: [{ label: 'Documentation', autogenerate: { directory: '.' } }],
     }),
   ],
 })

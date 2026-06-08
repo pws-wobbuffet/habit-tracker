@@ -19,11 +19,17 @@ db.run(`CREATE TABLE IF NOT EXISTS profile (
 )`)
 
 export function getHabits(): Habit[] {
-  return db.query('SELECT data FROM habits').all().map((r: { data: string }) => JSON.parse(r.data))
+  return db
+    .query('SELECT data FROM habits')
+    .all()
+    .map((r: { data: string }) => JSON.parse(r.data))
 }
 
 export function putHabit(habit: Habit): void {
-  db.run('INSERT OR REPLACE INTO habits (id, data) VALUES (?, ?)', [habit.id, JSON.stringify(habit)])
+  db.run('INSERT OR REPLACE INTO habits (id, data) VALUES (?, ?)', [
+    habit.id,
+    JSON.stringify(habit),
+  ])
 }
 
 export function deleteHabit(id: string): void {
@@ -33,14 +39,26 @@ export function deleteHabit(id: string): void {
 export function getCompletions(q?: CompletionQuery): Completion[] {
   let sql = 'SELECT data FROM completions WHERE 1=1'
   const params: string[] = []
-  if (q?.habitId) { sql += ' AND habit_id = ?'; params.push(q.habitId) }
-  if (q?.date) { sql += ' AND date = ?'; params.push(q.date) }
-  return db.query(sql).all(...params).map((r: { data: string }) => JSON.parse(r.data))
+  if (q?.habitId) {
+    sql += ' AND habit_id = ?'
+    params.push(q.habitId)
+  }
+  if (q?.date) {
+    sql += ' AND date = ?'
+    params.push(q.date)
+  }
+  return db
+    .query(sql)
+    .all(...params)
+    .map((r: { data: string }) => JSON.parse(r.data))
 }
 
 export function putCompletion(c: Completion): void {
   db.run('INSERT OR REPLACE INTO completions (id, habit_id, date, data) VALUES (?, ?, ?, ?)', [
-    c.id, c.habitId, c.date, JSON.stringify(c),
+    c.id,
+    c.habitId,
+    c.date,
+    JSON.stringify(c),
   ])
 }
 
@@ -49,10 +67,15 @@ export function deleteCompletion(id: string): void {
 }
 
 export function getProfile(): UserProfile | null {
-  const row = db.query('SELECT data FROM profile WHERE id = ?').get('user') as { data: string } | null
+  const row = db.query('SELECT data FROM profile WHERE id = ?').get('user') as {
+    data: string
+  } | null
   return row ? JSON.parse(row.data) : null
 }
 
 export function putProfile(profile: UserProfile): void {
-  db.run('INSERT OR REPLACE INTO profile (id, data) VALUES (?, ?)', ['user', JSON.stringify(profile)])
+  db.run('INSERT OR REPLACE INTO profile (id, data) VALUES (?, ?)', [
+    'user',
+    JSON.stringify(profile),
+  ])
 }
