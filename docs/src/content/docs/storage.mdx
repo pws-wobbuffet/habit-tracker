@@ -60,7 +60,7 @@ Uses the [`idb`](https://github.com/jakearchibald/idb) wrapper library around th
 | `completions` | `id`     | `by-habit` (habitId), `by-date` (date), `by-habit-date` ([habitId, date]) |
 | `profile`     | `id`     | --                                                                        |
 
-The database is opened lazily on first access. The database name is `habit-tracker`, version `1`. Since IndexedDB stores full JS objects, adding new optional fields to a type requires no migration.
+The database is opened lazily on first access. The database name is `habit-tracker`, version `2`. Since IndexedDB stores full JS objects, adding new optional fields to a type requires no migration.
 
 <Aside>
   IndexedDB data is scoped to the browser origin and is not shared between browsers or devices. Use

@@ -9,8 +9,8 @@
 ## Local development
 
 ```sh
-git clone https://github.com/pws-wobbuffet/habit-tracker
-cd habit-tracker
+git clone https://github.com/pws-wobbuffet/habitus
+cd habitus
 pnpm install
 bun run dev
 ```

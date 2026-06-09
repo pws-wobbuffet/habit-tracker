@@ -1,4 +1,4 @@
-# Habit Tracker
+# Habitus
 
 Mobile-first PWA for daily habit tracking. Offline-first, installable to your home screen, with an iOS-native feel on any device.
 
@@ -13,8 +13,8 @@ Mobile-first PWA for daily habit tracking. Offline-first, installable to your ho
 ## Quick start
 
 ```sh
-git clone https://github.com/pws-wobbuffet/habit-tracker
-cd habit-tracker
+git clone https://github.com/pws-wobbuffet/habitus
+cd habitus
 pnpm install
 bun run dev
 ```
@@ -46,7 +46,7 @@ bun run build       # Production build -> dist/
 
 ## Docs
 
-Full documentation at [pws-wobbuffet.github.io/habit-tracker](https://pws-wobbuffet.github.io/habit-tracker/).
+Full documentation at [pws-wobbuffet.github.io/habitus](https://pws-wobbuffet.github.io/habitus/).
 
 ## License
 
