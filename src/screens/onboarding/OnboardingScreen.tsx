@@ -55,63 +55,28 @@ export default function OnboardingScreen() {
   }
 
   return (
-    <div
-      className="scrollable scroll"
-      style={{
-        height: '100%',
-        background: 'var(--bg)',
-        overflowY: 'auto',
-      }}
-    >
+    <div className="scrollable scroll h-full overflow-y-auto bg-bg">
       {/* Header */}
-      <div style={{ padding: '28px 22px 0', flexShrink: 0 }}>
+      <div className="shrink-0 px-[22px] pt-7">
         {!isDesktop && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 10,
-                background: 'var(--accent)',
-                color: 'var(--on-accent)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+          <div className="mb-5 flex items-center gap-2.5">
+            <div className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-accent text-on-accent">
               <SparkleIcon size={18} />
             </div>
-            <span
-              style={{
-                fontSize: 22,
-                fontWeight: 800,
-                letterSpacing: '-0.02em',
-                color: 'var(--ink)',
-              }}
-            >
-              habitus
-            </span>
+            <span className="text-[22px] font-extrabold tracking-[-0.02em] text-ink">habitus</span>
           </div>
         )}
-        <h1
-          style={{
-            fontSize: 26,
-            fontWeight: 800,
-            letterSpacing: '-0.03em',
-            color: 'var(--ink)',
-            margin: '0 0 6px',
-          }}
-        >
+        <h1 className="mb-1.5 text-[26px] font-extrabold tracking-[-0.03em] text-ink">
           Which habits do you
           <br />
           want to build?
         </h1>
-        <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: '0 0 20px' }}>
+        <p className="mt-0 mb-5 text-sm text-ink-2">
           Pick a few to get started. You can always add or remove later.
         </p>
 
         {/* Category tabs */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap gap-1.5">
           {SUGGESTION_CATEGORIES.map((cat) => {
             const count = SUGGESTIONS.filter(
               (s) => s.category === cat && selected.has(s.name),
@@ -120,18 +85,9 @@ export default function OnboardingScreen() {
               <a
                 key={cat}
                 href={`#cat-${cat}`}
-                style={{
-                  padding: '6px 13px',
-                  borderRadius: 20,
-                  border: '1.5px solid var(--line)',
-                  background: count > 0 ? 'var(--accent-soft)' : 'var(--surface-2)',
-                  color: count > 0 ? 'var(--accent)' : 'var(--ink-2)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                  textDecoration: 'none',
-                }}
+                className={`shrink-0 rounded-[20px] border-[1.5px] border-line px-[13px] py-1.5 text-xs font-semibold whitespace-nowrap no-underline ${
+                  count > 0 ? 'bg-accent-soft text-accent' : 'bg-surface-2 text-ink-2'
+                }`}
               >
                 {cat}
                 {count > 0 ? ` ${count}` : ''}
@@ -142,45 +98,33 @@ export default function OnboardingScreen() {
       </div>
 
       {/* Habit grid */}
-      <div style={{ padding: '16px 22px 20px' }}>
+      <div className="px-[22px] pt-4 pb-5">
         {SUGGESTION_CATEGORIES.map((cat) => (
-          <div key={cat} id={`cat-${cat}`} style={{ marginBottom: 28 }}>
-            <div className="eyebrow" style={{ marginBottom: 12 }}>
-              {cat}
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9 }}>
+          <div key={cat} id={`cat-${cat}`} className="mb-7">
+            <div className="eyebrow mb-3">{cat}</div>
+            <div className="flex flex-wrap gap-[9px]">
               {SUGGESTIONS.filter((s) => s.category === cat).map((s) => {
                 const on = selected.has(s.name)
                 return (
                   <button
                     key={s.name}
                     onClick={() => toggle(s.name)}
+                    className="flex cursor-pointer items-center gap-2 rounded-[24px] border-2 px-3.5 py-[9px]"
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      padding: '9px 14px',
-                      borderRadius: 24,
-                      border: `2px solid ${on ? s.hex : 'var(--line)'}`,
+                      borderColor: on ? s.hex : 'var(--line)',
                       background: on
                         ? `color-mix(in srgb, ${s.hex} 15%, var(--surface))`
                         : 'var(--surface)',
-                      cursor: 'pointer',
                       transition: 'border-color .15s, background .15s',
                     }}
                   >
-                    <span style={{ fontSize: 18 }}>{s.icon}</span>
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)' }}>
-                        {s.name}
-                      </div>
+                    <span className="text-[18px]">{s.icon}</span>
+                    <div className="text-left">
+                      <div className="text-[13px] font-semibold text-ink">{s.name}</div>
                       {s.target && (
                         <div
-                          style={{
-                            fontSize: 11,
-                            color: on ? s.hex : 'var(--ink-3)',
-                            fontWeight: 600,
-                          }}
+                          className="text-[11px] font-semibold"
+                          style={{ color: on ? s.hex : 'var(--ink-3)' }}
                         >
                           {s.target.unit === 'steps'
                             ? `${s.target.qty}k steps`
@@ -190,17 +134,8 @@ export default function OnboardingScreen() {
                     </div>
                     {on && (
                       <div
-                        style={{
-                          width: 18,
-                          height: 18,
-                          borderRadius: '50%',
-                          background: s.hex,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginLeft: 2,
-                          flexShrink: 0,
-                        }}
+                        className="ml-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full"
+                        style={{ background: s.hex }}
                       >
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                           <path
@@ -223,30 +158,16 @@ export default function OnboardingScreen() {
 
       {/* Bottom CTA */}
       <div
-        style={{
-          position: 'sticky',
-          bottom: 0,
-          padding: '14px 22px',
-          paddingBottom: 'max(var(--safe-bottom), 14px)',
-          borderTop: '1px solid var(--line)',
-          background: 'var(--surface)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 10,
-        }}
+        className="sticky bottom-0 flex flex-col gap-2.5 border-t border-line bg-surface px-[22px] pt-3.5"
+        style={{ paddingBottom: 'max(var(--safe-bottom), 14px)' }}
       >
         <button
           onClick={handleStart}
           disabled={loading}
+          className="w-full rounded-[14px] border-none py-3.5 text-[15px] font-bold"
           style={{
-            width: '100%',
-            padding: '14px 0',
-            borderRadius: 14,
-            border: 'none',
             background: selected.size > 0 ? 'var(--accent)' : 'var(--surface-2)',
             color: selected.size > 0 ? 'var(--on-accent)' : 'var(--ink-3)',
-            fontWeight: 700,
-            fontSize: 15,
             cursor: selected.size > 0 ? 'pointer' : 'default',
             transition: 'background .2s, color .2s',
           }}
@@ -257,17 +178,7 @@ export default function OnboardingScreen() {
         </button>
         <button
           onClick={handleSkip}
-          style={{
-            width: '100%',
-            padding: '10px 0',
-            borderRadius: 14,
-            border: 'none',
-            background: 'none',
-            color: 'var(--ink-3)',
-            fontWeight: 600,
-            fontSize: 13,
-            cursor: 'pointer',
-          }}
+          className="w-full cursor-pointer rounded-[14px] border-none bg-none py-2.5 text-[13px] font-semibold text-ink-3"
         >
           Start fresh, I'll add my own
         </button>

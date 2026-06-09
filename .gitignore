@@ -30,3 +30,7 @@ docs/dist
 *.njsproj
 *.sln
 *.sw?
+
+# Local screenshot artifacts
+/shots
+screenshot.mjs

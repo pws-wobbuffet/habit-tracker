@@ -86,38 +86,17 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+    <div className="flex flex-col gap-[22px]">
       {/* Suggestions dropdown */}
-      <div
-        style={{
-          border: '1px solid var(--line)',
-          borderRadius: 14,
-          overflow: 'hidden',
-          background: 'var(--surface)',
-        }}
-      >
+      <div className="overflow-hidden rounded-[14px] border border-line bg-surface">
         <button
           onClick={() => setSuggestionsOpen(!suggestionsOpen)}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '13px 16px',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--ink)',
-            fontWeight: 600,
-            fontSize: 14,
-          }}
+          className="flex w-full cursor-pointer items-center justify-between border-none bg-none px-4 py-[13px] text-sm font-semibold text-ink"
         >
           <span>✨ Suggestions</span>
           <span
+            className="flex items-center text-ink-3"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              color: 'var(--ink-3)',
               transform: suggestionsOpen ? 'rotate(-90deg)' : 'rotate(90deg)',
               transition: 'transform .2s',
             }}
@@ -127,33 +106,16 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
         </button>
 
         {suggestionsOpen && (
-          <div style={{ borderTop: '1px solid var(--line)', padding: '12px 16px 16px' }}>
+          <div className="border-t border-line px-4 pt-3 pb-4">
             {/* Category tabs */}
-            <div
-              style={{
-                display: 'flex',
-                gap: 6,
-                marginBottom: 14,
-                overflowX: 'auto',
-                paddingBottom: 2,
-              }}
-            >
+            <div className="mb-3.5 flex gap-1.5 overflow-x-auto pb-0.5">
               {SUGGESTION_CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCat(cat)}
-                  style={{
-                    padding: '5px 12px',
-                    borderRadius: 20,
-                    border: 'none',
-                    background: activeCat === cat ? 'var(--accent)' : 'var(--surface-2)',
-                    color: activeCat === cat ? 'var(--on-accent)' : 'var(--ink-2)',
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                  }}
+                  className={`shrink-0 cursor-pointer rounded-[20px] border-none px-3 py-[5px] text-xs font-semibold whitespace-nowrap ${
+                    activeCat === cat ? 'bg-accent text-on-accent' : 'bg-surface-2 text-ink-2'
+                  }`}
                 >
                   {cat}
                 </button>
@@ -161,29 +123,18 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
             </div>
 
             {/* Suggestion chips */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            <div className="flex flex-wrap gap-2">
               {SUGGESTIONS.filter((s) => s.category === activeCat).map((s) => (
                 <button
                   key={s.name}
                   onClick={() => applySuggestion(s)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 7,
-                    padding: '8px 13px',
-                    borderRadius: 22,
-                    border: `1.5px solid var(--line)`,
-                    background: `color-mix(in srgb, ${s.hex} 10%, var(--surface))`,
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: 'var(--ink)',
-                  }}
+                  className="flex cursor-pointer items-center gap-[7px] rounded-[22px] border-[1.5px] border-line px-[13px] py-2 text-[13px] font-semibold text-ink"
+                  style={{ background: `color-mix(in srgb, ${s.hex} 10%, var(--surface))` }}
                 >
-                  <span style={{ fontSize: 16 }}>{s.icon}</span>
+                  <span className="text-base">{s.icon}</span>
                   <span>{s.name}</span>
                   {s.target && (
-                    <span style={{ fontSize: 11, color: s.hex, fontWeight: 700 }}>
+                    <span className="text-[11px] font-bold" style={{ color: s.hex }}>
                       {s.target.qty}
                       {s.target.unit}
                     </span>
@@ -196,54 +147,26 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
       </div>
 
       {/* Preview row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+      <div className="flex items-center gap-3.5">
         <div
-          style={{
-            width: 46,
-            height: 46,
-            borderRadius: 13,
-            background: `color-mix(in srgb, ${hex} 20%, var(--surface))`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 22,
-            flexShrink: 0,
-          }}
+          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[13px] text-[22px]"
+          style={{ background: `color-mix(in srgb, ${hex} 20%, var(--surface))` }}
         >
           {icon}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 15,
-              fontWeight: 600,
-              color: 'var(--ink)',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {name || 'New habit'}
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[15px] font-semibold text-ink">{name || 'New habit'}</div>
+          <div className="mt-0.5 text-xs text-ink-3">
             {scheduleLabel(schedule)}
             {targetEnabled && (
-              <span style={{ marginLeft: 6, color: 'var(--accent)' }}>
-                · {formatQty(selectedUnit, qty)}
-              </span>
+              <span className="ml-1.5 text-accent">· {formatQty(selectedUnit, qty)}</span>
             )}
           </div>
         </div>
         <button
           onClick={() => setIsFavorite(!isFavorite)}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: isFavorite ? '#e6a93a' : 'var(--ink-3)',
-            flexShrink: 0,
-            padding: 4,
-          }}
+          className="shrink-0 cursor-pointer border-none bg-none p-1"
+          style={{ color: isFavorite ? '#e6a93a' : 'var(--ink-3)' }}
         >
           {isFavorite ? <StarFillIcon size={20} /> : <StarIcon size={20} />}
         </button>
@@ -251,100 +174,62 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
 
       {/* Name input */}
       <div>
-        <label className="eyebrow" style={{ display: 'block', marginBottom: 8 }}>
-          Habit name
-        </label>
+        <label className="eyebrow mb-2 block">Habit name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Morning run"
-          style={{
-            width: '100%',
-            padding: '10px 14px',
-            borderRadius: 10,
-            border: '1px solid var(--line)',
-            background: 'var(--surface-2)',
-            color: 'var(--ink)',
-            fontSize: 14,
-            outline: 'none',
-            fontFamily: 'inherit',
-          }}
+          className="w-full rounded-[10px] border border-line bg-surface-2 px-3.5 py-2.5 font-[inherit] text-sm text-ink outline-none"
         />
       </div>
 
       {/* Emoji picker */}
       <div>
-        <label className="eyebrow" style={{ display: 'block', marginBottom: 8 }}>
-          Icon
-        </label>
+        <label className="eyebrow mb-2 block">Icon</label>
         <EmojiPicker value={icon} onChange={setIcon} />
       </div>
 
       {/* Color picker */}
       <div>
-        <label className="eyebrow" style={{ display: 'block', marginBottom: 8 }}>
-          Color
-        </label>
+        <label className="eyebrow mb-2 block">Color</label>
         <ColorPicker value={hex} onChange={setHex} />
       </div>
 
       {/* Schedule editor */}
       <div>
-        <label className="eyebrow" style={{ display: 'block', marginBottom: 8 }}>
-          Schedule
-        </label>
+        <label className="eyebrow mb-2 block">Schedule</label>
         <ScheduleEditor value={schedule} onChange={setSchedule} />
       </div>
 
       {/* Target (optional) */}
       <div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: targetEnabled ? 14 : 0,
-          }}
-        >
+        <div className={`flex items-center justify-between ${targetEnabled ? 'mb-3.5' : ''}`}>
           <label className="eyebrow">Target (optional)</label>
           <button
             onClick={() => setTargetEnabled(!targetEnabled)}
-            style={{
-              padding: '4px 12px',
-              borderRadius: 20,
-              border: '1px solid var(--line)',
-              background: targetEnabled ? 'var(--accent)' : 'var(--surface-2)',
-              color: targetEnabled ? 'var(--on-accent)' : 'var(--ink-2)',
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'background .15s, color .15s',
-            }}
+            className={`cursor-pointer rounded-[20px] border border-line px-3 py-1 text-xs font-semibold transition-[background,color] duration-150 ${
+              targetEnabled ? 'bg-accent text-on-accent' : 'bg-surface-2 text-ink-2'
+            }`}
           >
             {targetEnabled ? 'On' : 'Off'}
           </button>
         </div>
 
         {targetEnabled && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="flex flex-col gap-4">
             {/* Unit grid */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+            <div className="flex flex-wrap gap-[7px]">
               {UNITS.map((u) => (
                 <button
                   key={u.id}
                   onClick={() => handleUnitChange(u)}
+                  className="cursor-pointer rounded-[20px] border-[1.5px] px-[13px] py-1.5 text-[13px] font-semibold transition-[background,border-color,color] duration-100"
                   style={{
-                    padding: '6px 13px',
-                    borderRadius: 20,
-                    border: `1.5px solid ${selectedUnit.id === u.id ? 'var(--accent)' : 'var(--line)'}`,
+                    borderColor: selectedUnit.id === u.id ? 'var(--accent)' : 'var(--line)',
                     background:
                       selectedUnit.id === u.id ? 'var(--accent-soft)' : 'var(--surface-2)',
                     color: selectedUnit.id === u.id ? 'var(--accent)' : 'var(--ink-2)',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'background .12s, border-color .12s, color .12s',
                   }}
                 >
                   {u.label}
@@ -353,28 +238,12 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
             </div>
 
             {/* Quantity slider */}
-            <div
-              style={{
-                background: 'var(--surface-2)',
-                borderRadius: 14,
-                padding: '16px 18px',
-                border: '1px solid var(--line)',
-              }}
-            >
-              <div style={{ textAlign: 'center', marginBottom: 14 }}>
-                <span
-                  style={{
-                    fontSize: 36,
-                    fontWeight: 800,
-                    color: 'var(--accent)',
-                    letterSpacing: '-0.03em',
-                  }}
-                >
+            <div className="rounded-[14px] border border-line bg-surface-2 px-[18px] py-4">
+              <div className="mb-3.5 text-center">
+                <span className="text-[36px] font-extrabold tracking-[-0.03em] text-accent">
                   {qty}
                 </span>
-                <span
-                  style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-3)', marginLeft: 5 }}
-                >
+                <span className="ml-[5px] text-base font-semibold text-ink-3">
                   {selectedUnit.short}
                 </span>
               </div>
@@ -385,17 +254,10 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
                 step={selectedUnit.step}
                 value={qty}
                 onChange={(e) => setQty(Number(e.target.value))}
-                style={{ width: '100%', accentColor: 'var(--accent)', cursor: 'pointer' }}
+                className="w-full cursor-pointer"
+                style={{ accentColor: 'var(--accent)' }}
               />
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: 4,
-                  fontSize: 11,
-                  color: 'var(--ink-3)',
-                }}
-              >
+              <div className="mt-1 flex justify-between text-[11px] text-ink-3">
                 <span>
                   {selectedUnit.min} {selectedUnit.short}
                 </span>
@@ -409,21 +271,11 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
       </div>
 
       {/* Buttons */}
-      <div style={{ display: 'flex', gap: 10 }}>
+      <div className="flex gap-2.5">
         {onCancel && (
           <button
             onClick={onCancel}
-            style={{
-              flex: 1,
-              padding: '12px 0',
-              borderRadius: 12,
-              border: '1px solid var(--line)',
-              background: 'var(--surface-2)',
-              color: 'var(--ink-2)',
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: 'pointer',
-            }}
+            className="flex-1 cursor-pointer rounded-[12px] border border-line bg-surface-2 py-3 text-sm font-semibold text-ink-2"
           >
             Cancel
           </button>
@@ -431,18 +283,7 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
         <button
           onClick={handleSubmit}
           disabled={!name.trim()}
-          style={{
-            flex: 2,
-            padding: '12px 0',
-            borderRadius: 12,
-            border: 'none',
-            background: 'var(--accent)',
-            color: 'var(--on-accent)',
-            fontWeight: 600,
-            fontSize: 14,
-            cursor: name.trim() ? 'pointer' : 'not-allowed',
-            opacity: name.trim() ? 1 : 0.4,
-          }}
+          className="flex-[2] cursor-pointer rounded-[12px] border-none bg-accent py-3 text-sm font-semibold text-on-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           {submitLabel}
         </button>

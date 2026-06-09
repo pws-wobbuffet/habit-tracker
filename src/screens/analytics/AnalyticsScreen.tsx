@@ -24,119 +24,53 @@ export default function AnalyticsScreen() {
     : 0
 
   return (
-    <div
-      className="scrollable scroll"
-      style={{
-        height: '100%',
-        padding: '10px 18px 100px',
-        background: 'var(--bg)',
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 22,
-          fontWeight: 800,
-          letterSpacing: '-0.02em',
-          color: 'var(--ink)',
-          margin: '10px 0 16px',
-        }}
-      >
+    <div className="scrollable scroll h-full bg-bg px-[18px] pt-2.5 pb-[100px]">
+      <h1 className="mt-2.5 mb-4 text-[22px] font-extrabold tracking-[-0.02em] text-ink">
         Analytics
       </h1>
 
       {/* 2x2 stat cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 12,
-          marginBottom: 16,
-        }}
-      >
-        <div className="card" style={{ padding: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>
-            Today
-          </div>
-          <div className="num" style={{ fontSize: 28, color: 'var(--accent)' }}>
-            {percent}%
-          </div>
+      <div className="mb-4 grid grid-cols-2 gap-3">
+        <div className="card p-4">
+          <div className="eyebrow mb-1.5">Today</div>
+          <div className="num text-[28px] text-accent">{percent}%</div>
         </div>
-        <div className="card" style={{ padding: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>
-            Streak
-          </div>
-          <div className="num" style={{ fontSize: 28, color: 'var(--ink)' }}>
-            {streak}d
-          </div>
+        <div className="card p-4">
+          <div className="eyebrow mb-1.5">Streak</div>
+          <div className="num text-[28px] text-ink">{streak}d</div>
         </div>
-        <div className="card" style={{ padding: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>
-            Total
-          </div>
-          <div className="num" style={{ fontSize: 28, color: 'var(--ink)' }}>
-            {totalCompletions}
-          </div>
+        <div className="card p-4">
+          <div className="eyebrow mb-1.5">Total</div>
+          <div className="num text-[28px] text-ink">{totalCompletions}</div>
         </div>
-        <div className="card" style={{ padding: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>
-            Active days
-          </div>
-          <div className="num" style={{ fontSize: 28, color: 'var(--ink)' }}>
-            {totalDays}
-          </div>
+        <div className="card p-4">
+          <div className="eyebrow mb-1.5">Active days</div>
+          <div className="num text-[28px] text-ink">{totalDays}</div>
         </div>
       </div>
 
       {/* 30-day bar chart */}
-      <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 14,
-          }}
-        >
+      <div className="card mb-4 p-4">
+        <div className="mb-3.5 flex items-center justify-between">
           <div className="eyebrow">30-day completion</div>
-          <span className="num" style={{ fontSize: 13, color: 'var(--ink-2)' }}>
-            avg {avg30}%
-          </span>
+          <span className="num text-[13px] text-ink-2">avg {avg30}%</span>
         </div>
         <Bars data={series30} height={64} />
       </div>
 
       {/* Per-habit consistency */}
       {consistency.length > 0 && (
-        <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 14 }}>
-            Habit consistency (30d)
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="card mb-4 p-4">
+          <div className="eyebrow mb-3.5">Habit consistency (30d)</div>
+          <div className="flex flex-col gap-3">
             {consistency.map(({ habit, pct }) => (
-              <div key={habit.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 16, flexShrink: 0, width: 22 }}>{habit.icon}</span>
-                <span
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: 'var(--ink)',
-                    flexShrink: 0,
-                    minWidth: 80,
-                    maxWidth: 120,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
+              <div key={habit.id} className="flex items-center gap-2.5">
+                <span className="w-[22px] shrink-0 text-base">{habit.icon}</span>
+                <span className="max-w-[120px] min-w-20 shrink-0 truncate text-[13px] font-semibold text-ink">
                   {habit.name}
                 </span>
                 <ConsBar pct={pct} color={habit.hex} />
-                <span
-                  className="num"
-                  style={{ fontSize: 12, color: 'var(--ink-2)', flexShrink: 0, width: 32 }}
-                >
-                  {pct}%
-                </span>
+                <span className="num w-8 shrink-0 text-xs text-ink-2">{pct}%</span>
               </div>
             ))}
           </div>
@@ -144,10 +78,8 @@ export default function AnalyticsScreen() {
       )}
 
       {/* Best day of week */}
-      <div className="card" style={{ padding: 16 }}>
-        <div className="eyebrow" style={{ marginBottom: 14 }}>
-          Best day of week
-        </div>
+      <div className="card p-4">
+        <div className="eyebrow mb-3.5">Best day of week</div>
         <DOW data={dowStats} />
       </div>
     </div>

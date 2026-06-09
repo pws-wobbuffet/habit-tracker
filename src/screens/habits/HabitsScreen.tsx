@@ -39,75 +39,46 @@ function HabitTableRow({
         onDragOver()
       }}
       onDragEnd={onDragEnd}
-      style={{
-        borderBottom: '1px solid var(--line)',
-        cursor: 'grab',
-      }}
+      className="cursor-grab border-b border-line"
     >
-      <td style={{ padding: '10px 8px', width: 34 }}>
-        <span style={{ color: 'var(--ink-3)' }}>
+      <td className="w-[34px] px-2 py-2.5">
+        <span className="text-ink-3">
           <DragIcon size={16} />
         </span>
       </td>
-      <td style={{ padding: '10px 12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <td className="px-3 py-2.5">
+        <div className="flex items-center gap-2.5">
           <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 9,
-              background: `color-mix(in srgb, ${habit.hex} 18%, transparent)`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 16,
-              flexShrink: 0,
-            }}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] text-base"
+            style={{ background: `color-mix(in srgb, ${habit.hex} 18%, transparent)` }}
           >
             {habit.icon}
           </div>
-          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>{habit.name}</span>
+          <span className="text-sm font-semibold text-ink">{habit.name}</span>
         </div>
       </td>
-      <td style={{ padding: '10px 12px', fontSize: 13, color: 'var(--ink-3)' }}>
-        {scheduleLabel(habit.schedule)}
-      </td>
-      <td style={{ padding: '10px 12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <td className="px-3 py-2.5 text-[13px] text-ink-3">{scheduleLabel(habit.schedule)}</td>
+      <td className="px-3 py-2.5">
+        <div className="flex items-center gap-1">
           <FlameIcon size={14} style={{ color: habit.hex }} />
-          <span className="num" style={{ fontSize: 14, color: 'var(--ink)' }}>
-            {streak}
-          </span>
+          <span className="num text-sm text-ink">{streak}</span>
         </div>
       </td>
-      <td style={{ padding: '10px 12px', width: 120 }}>
+      <td className="w-[120px] px-3 py-2.5">
         <ConsBar pct={0} color={habit.hex} />
       </td>
-      <td style={{ padding: '10px 12px', textAlign: 'right' }}>
-        <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+      <td className="px-3 py-2.5 text-right">
+        <div className="flex justify-end gap-1.5">
           <button
             onClick={() => onEdit(habit)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--ink-3)',
-              padding: 4,
-              borderRadius: 6,
-            }}
+            className="cursor-pointer rounded-md border-none bg-none p-1 text-ink-3"
           >
             <PencilIcon size={16} />
           </button>
           <button
             onClick={() => onDelete(habit.id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#e05858',
-              padding: 4,
-              borderRadius: 6,
-            }}
+            className="cursor-pointer rounded-md border-none bg-none p-1"
+            style={{ color: '#e05858' }}
           >
             <TrashIcon size={16} />
           </button>
@@ -178,56 +149,21 @@ export default function HabitsScreen() {
   const drawerOpen = editingHabit !== null || showAddDrawer
 
   return (
-    <div
-      style={{
-        height: '100%',
-        display: 'flex',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
+    <div className="relative flex h-full overflow-hidden">
       {/* Main table area */}
-      <div
-        className="scrollable scroll"
-        style={{
-          flex: 1,
-          padding: '24px 24px 32px',
-          background: 'var(--bg)',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 22,
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            color: 'var(--ink)',
-            margin: '0 0 20px',
-          }}
-        >
-          Habits
-        </h1>
+      <div className="scrollable scroll flex-1 bg-bg px-6 pt-6 pb-8">
+        <h1 className="mb-5 text-[22px] font-extrabold tracking-[-0.02em] text-ink">Habits</h1>
 
-        <div className="card" style={{ overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="card overflow-hidden">
+          <table className="w-full border-collapse">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--line)' }}>
-                <th style={{ width: 34 }} />
-                <th className="eyebrow" style={{ padding: '10px 12px', textAlign: 'left' }}>
-                  Habit
-                </th>
-                <th className="eyebrow" style={{ padding: '10px 12px', textAlign: 'left' }}>
-                  Schedule
-                </th>
-                <th className="eyebrow" style={{ padding: '10px 12px', textAlign: 'left' }}>
-                  Streak
-                </th>
-                <th
-                  className="eyebrow"
-                  style={{ padding: '10px 12px', textAlign: 'left', width: 120 }}
-                >
-                  30d
-                </th>
-                <th style={{ padding: '10px 12px', width: 80 }} />
+              <tr className="border-b border-line">
+                <th className="w-[34px]" />
+                <th className="eyebrow px-3 py-2.5 text-left">Habit</th>
+                <th className="eyebrow px-3 py-2.5 text-left">Schedule</th>
+                <th className="eyebrow px-3 py-2.5 text-left">Streak</th>
+                <th className="eyebrow w-[120px] px-3 py-2.5 text-left">30d</th>
+                <th className="w-20 px-3 py-2.5" />
               </tr>
             </thead>
             <tbody>
@@ -250,22 +186,10 @@ export default function HabitsScreen() {
             </tbody>
           </table>
 
-          <div style={{ padding: '12px 16px' }}>
+          <div className="px-4 py-3">
             <button
               onClick={() => setShowAddDrawer(true)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                background: 'none',
-                border: '1px dashed var(--line-strong)',
-                borderRadius: 10,
-                padding: '8px 14px',
-                cursor: 'pointer',
-                fontSize: 13,
-                fontWeight: 600,
-                color: 'var(--ink-3)',
-              }}
+              className="flex cursor-pointer items-center gap-1.5 rounded-[10px] border border-dashed border-line-strong bg-none px-3.5 py-2 text-[13px] font-semibold text-ink-3"
             >
               <PlusIcon size={16} />
               Add a habit
@@ -277,28 +201,10 @@ export default function HabitsScreen() {
       {/* Edit / Add drawer */}
       {drawerOpen && (
         <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: 380,
-            background: 'var(--surface)',
-            borderLeft: '1px solid var(--line)',
-            padding: '24px 20px',
-            overflowY: 'auto',
-            zIndex: 10,
-            boxShadow: 'var(--shadow-lg)',
-          }}
+          className="absolute top-0 right-0 bottom-0 z-10 w-[380px] overflow-y-auto border-l border-line bg-surface px-5 py-6"
+          style={{ boxShadow: 'var(--shadow-lg)' }}
         >
-          <h2
-            style={{
-              fontSize: 17,
-              fontWeight: 700,
-              color: 'var(--ink)',
-              margin: '0 0 20px',
-            }}
-          >
+          <h2 className="mb-5 text-[17px] font-bold text-ink">
             {editingHabit ? 'Edit habit' : 'New habit'}
           </h2>
           <HabitForm

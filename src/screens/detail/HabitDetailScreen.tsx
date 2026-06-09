@@ -24,19 +24,7 @@ export default function HabitDetailScreen() {
   const streak = useHabitStreak(id ?? '')
 
   if (!habit) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-          color: 'var(--ink-3)',
-        }}
-      >
-        Habit not found
-      </div>
-    )
+    return <div className="flex h-full items-center justify-center text-ink-3">Habit not found</div>
   }
 
   const sorted = [...completions].sort((a, b) => b.date.localeCompare(a.date))
@@ -74,203 +62,85 @@ export default function HabitDetailScreen() {
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        background: 'var(--bg)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <div className="flex h-full flex-col bg-bg">
       {/* Header row */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '14px 18px',
-          borderBottom: '1px solid var(--line)',
-        }}
-      >
+      <div className="flex items-center justify-between border-b border-line px-[18px] py-3.5">
         <button
           onClick={() => navigate(-1)}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--accent)',
-            display: 'flex',
-            alignItems: 'center',
-          }}
+          className="flex cursor-pointer items-center border-none bg-none text-accent"
         >
           <ChevLeftIcon size={20} />
         </button>
         <button
           onClick={() => toggleFavorite(habit.id)}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: habit.isFavorite ? '#e6a93a' : 'var(--ink-3)',
-          }}
+          className="cursor-pointer border-none bg-none"
+          style={{ color: habit.isFavorite ? '#e6a93a' : 'var(--ink-3)' }}
         >
           {habit.isFavorite ? <StarFillIcon size={22} /> : <StarIcon size={22} />}
         </button>
       </div>
 
-      <div className="scrollable" style={{ flex: 1, padding: '20px 18px 80px' }}>
+      <div className="scrollable flex-1 px-[18px] pt-5 pb-20">
         {/* Habit identity */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+        <div className="mb-5 flex items-center gap-3.5">
           <div
-            style={{
-              width: 62,
-              height: 62,
-              borderRadius: 18,
-              background: `color-mix(in srgb, ${habit.hex} 18%, var(--surface))`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 28,
-              flexShrink: 0,
-              border: '1px solid var(--line)',
-            }}
+            className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-[18px] border border-line text-[28px]"
+            style={{ background: `color-mix(in srgb, ${habit.hex} 18%, var(--surface))` }}
           >
             {habit.icon}
           </div>
           <div>
-            <h1
-              style={{
-                fontSize: 24,
-                fontWeight: 800,
-                letterSpacing: '-0.02em',
-                color: 'var(--ink)',
-                margin: '0 0 4px',
-              }}
-            >
+            <h1 className="mb-1 text-2xl font-extrabold tracking-[-0.02em] text-ink">
               {habit.name}
             </h1>
-            <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>
-              {scheduleLabel(habit.schedule)}
-            </div>
+            <div className="text-[13px] text-ink-3">{scheduleLabel(habit.schedule)}</div>
           </div>
         </div>
 
         {/* 4 stat chips */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr',
-            gap: 8,
-            marginBottom: 16,
-          }}
-        >
-          <div
-            style={{
-              textAlign: 'center',
-              background: 'var(--surface-2)',
-              borderRadius: 12,
-              padding: '12px 8px',
-            }}
-          >
-            <div className="num" style={{ fontSize: 20, color: 'var(--ink)' }}>
-              {streak}d
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 3 }}>Streak</div>
+        <div className="mb-4 grid grid-cols-4 gap-2">
+          <div className="rounded-[12px] bg-surface-2 px-2 py-3 text-center">
+            <div className="num text-xl text-ink">{streak}d</div>
+            <div className="mt-[3px] text-[11px] text-ink-3">Streak</div>
           </div>
-          <div
-            style={{
-              textAlign: 'center',
-              background: 'var(--surface-2)',
-              borderRadius: 12,
-              padding: '12px 8px',
-            }}
-          >
-            <div className="num" style={{ fontSize: 20, color: 'var(--ink)' }}>
+          <div className="rounded-[12px] bg-surface-2 px-2 py-3 text-center">
+            <div className="num text-xl text-ink">
               <BestStreakDisplay />
             </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 3 }}>Best</div>
+            <div className="mt-[3px] text-[11px] text-ink-3">Best</div>
           </div>
-          <div
-            style={{
-              textAlign: 'center',
-              background: 'var(--surface-2)',
-              borderRadius: 12,
-              padding: '12px 8px',
-            }}
-          >
-            <div className="num" style={{ fontSize: 20, color: 'var(--ink)' }}>
-              {completions.length}
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 3 }}>Total</div>
+          <div className="rounded-[12px] bg-surface-2 px-2 py-3 text-center">
+            <div className="num text-xl text-ink">{completions.length}</div>
+            <div className="mt-[3px] text-[11px] text-ink-3">Total</div>
           </div>
-          <div
-            style={{
-              textAlign: 'center',
-              background: 'var(--surface-2)',
-              borderRadius: 12,
-              padding: '12px 8px',
-            }}
-          >
-            <div className="num" style={{ fontSize: 20, color: 'var(--ink)' }}>
-              {pct30}%
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 3 }}>30d</div>
+          <div className="rounded-[12px] bg-surface-2 px-2 py-3 text-center">
+            <div className="num text-xl text-ink">{pct30}%</div>
+            <div className="mt-[3px] text-[11px] text-ink-3">30d</div>
           </div>
         </div>
 
         {/* 12-week sparkline */}
-        <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 10 }}>
-            Last 12 weeks
-          </div>
+        <div className="card mb-4 p-4">
+          <div className="eyebrow mb-2.5">Last 12 weeks</div>
           <Area data={weeks12} color={habit.hex} height={80} />
         </div>
 
         {/* History */}
-        <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-          <div className="eyebrow" style={{ marginBottom: 12 }}>
-            Completion history
-          </div>
+        <div className="card mb-4 p-4">
+          <div className="eyebrow mb-3">Completion history</div>
           {sorted.length === 0 && (
-            <p
-              style={{
-                fontSize: 13,
-                color: 'var(--ink-3)',
-                textAlign: 'center',
-                padding: '16px 0',
-              }}
-            >
-              No completions yet
-            </p>
+            <p className="py-4 text-center text-[13px] text-ink-3">No completions yet</p>
           )}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 10,
-              maxHeight: 300,
-              overflowY: 'auto',
-            }}
-          >
+          <div className="flex max-h-[300px] flex-col gap-2.5 overflow-y-auto">
             {sorted.map((c) => (
-              <div key={c.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              <div key={c.id} className="flex items-start gap-2.5">
                 <div
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    background: habit.hex,
-                    marginTop: 5,
-                    flexShrink: 0,
-                  }}
+                  className="mt-[5px] h-2 w-2 shrink-0 rounded-full"
+                  style={{ background: habit.hex }}
                 />
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>{c.date}</div>
-                  {c.note && (
-                    <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>
-                      {c.note}
-                    </div>
-                  )}
+                  <div className="text-xs font-semibold text-ink">{c.date}</div>
+                  {c.note && <div className="mt-0.5 text-xs text-ink-3">{c.note}</div>}
                 </div>
               </div>
             ))}
@@ -280,21 +150,8 @@ export default function HabitDetailScreen() {
         {/* Delete */}
         <button
           onClick={handleDelete}
-          style={{
-            width: '100%',
-            padding: '13px 0',
-            borderRadius: 14,
-            border: 'none',
-            background: 'rgba(224,88,88,.1)',
-            color: '#e05858',
-            fontWeight: 700,
-            fontSize: 14,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-          }}
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] border-none py-[13px] text-sm font-bold"
+          style={{ background: 'rgba(224,88,88,.1)', color: '#e05858' }}
         >
           <TrashIcon size={16} />
           Delete habit
