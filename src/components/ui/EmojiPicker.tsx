@@ -43,26 +43,14 @@ interface EmojiPickerProps {
 
 export function EmojiPicker({ value, onChange }: EmojiPickerProps) {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(7, 1fr)',
-        gap: 6,
-      }}
-    >
+    <div className="grid grid-cols-7 gap-1.5">
       {EMOJI.map((e) => (
         <button
           key={e}
           onClick={() => onChange(e)}
-          style={{
-            fontSize: 22,
-            padding: '6px 4px',
-            borderRadius: 10,
-            border: value === e ? '2px solid var(--accent)' : '2px solid transparent',
-            background: value === e ? 'var(--accent-soft)' : 'transparent',
-            cursor: 'pointer',
-            transition: 'background .15s',
-          }}
+          className={`cursor-pointer rounded-[10px] border-2 px-1 py-1.5 text-[22px] transition-colors duration-150 ${
+            value === e ? 'border-accent bg-accent-soft' : 'border-transparent bg-transparent'
+          }`}
         >
           {e}
         </button>

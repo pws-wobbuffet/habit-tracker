@@ -29,7 +29,7 @@ export function ScheduleEditor({ value, onChange }: ScheduleEditorProps) {
   const selectedDays = value.type === 'days' ? value.days : []
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div className="flex flex-col gap-3">
       <Segmented
         options={[
           { value: 'daily', label: 'Daily' },
@@ -40,25 +40,16 @@ export function ScheduleEditor({ value, onChange }: ScheduleEditorProps) {
         onChange={handleSegChange}
       />
       {segValue === 'custom' && (
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div className="flex gap-1.5">
           {DAY_LABELS.map((label, idx) => {
             const active = selectedDays.includes(idx)
             return (
               <button
                 key={idx}
                 onClick={() => toggleDay(idx)}
-                style={{
-                  flex: 1,
-                  padding: '8px 0',
-                  borderRadius: 10,
-                  border: 'none',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  background: active ? 'var(--accent)' : 'var(--surface-2)',
-                  color: active ? 'var(--on-accent)' : 'var(--ink-2)',
-                  transition: 'background .15s, color .15s',
-                }}
+                className={`flex-1 cursor-pointer rounded-[10px] border-none py-2 text-xs font-semibold transition-colors duration-150 ${
+                  active ? 'bg-accent text-on-accent' : 'bg-surface-2 text-ink-2'
+                }`}
               >
                 {label}
               </button>

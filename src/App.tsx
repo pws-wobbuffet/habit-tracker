@@ -81,27 +81,14 @@ export default function App() {
   return (
     <LazyMotion features={domAnimation}>
       <div
-        className="app-root"
+        className="app-root flex h-[100dvh]"
         data-mode={mode === 'light' ? undefined : mode}
-        style={{
-          ...accentStyle,
-          paddingTop: 'var(--safe-top)',
-          height: '100dvh',
-          display: 'flex',
-        }}
+        style={{ ...accentStyle, paddingTop: 'var(--safe-top)' }}
       >
         {isDesktop && <SideNav />}
 
-        <div
-          style={{
-            flex: 1,
-            minWidth: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <div className="relative flex-1 overflow-hidden">
             <Routes location={location}>
               <Route
                 path="/"

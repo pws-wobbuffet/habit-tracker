@@ -40,51 +40,25 @@ export default function CalendarScreen() {
     : 0
 
   return (
-    <div
-      className="scrollable scroll"
-      style={{
-        height: '100%',
-        padding: '10px 18px 100px',
-        background: 'var(--bg)',
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 22,
-          fontWeight: 800,
-          letterSpacing: '-0.02em',
-          color: 'var(--ink)',
-          margin: '10px 0 16px',
-        }}
-      >
+    <div className="scrollable scroll h-full bg-bg px-[18px] pt-2.5 pb-[100px]">
+      <h1 className="mt-2.5 mb-4 text-[22px] font-extrabold tracking-[-0.02em] text-ink">
         Calendar
       </h1>
 
       {selectedCell && (
-        <div
-          className="card"
-          style={{
-            padding: 16,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
-            marginBottom: 16,
-          }}
-        >
+        <div className="card mb-4 flex items-center gap-4 p-4">
           <Ring pct={selectedCell.pct} size={58} stroke={6}>
-            <span className="num" style={{ fontSize: 12, color: 'var(--ink)' }}>
-              {selectedCell.pct}%
-            </span>
+            <span className="num text-xs text-ink">{selectedCell.pct}%</span>
           </Ring>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>
+            <div className="text-[15px] font-bold text-ink">
               {selectedCell.d.toLocaleDateString('en-US', {
                 weekday: 'long',
                 month: 'long',
                 day: 'numeric',
               })}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 2 }}>
+            <div className="mt-0.5 text-[13px] text-ink-3">
               {selectedHabits} habit{selectedHabits !== 1 ? 's' : ''} completed
               {selectedCell.due > 0 && ` of ${selectedCell.due}`}
             </div>
@@ -93,16 +67,7 @@ export default function CalendarScreen() {
       )}
 
       {/* Legend */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          marginBottom: 16,
-          fontSize: 11,
-          color: 'var(--ink-3)',
-        }}
-      >
+      <div className="mb-4 flex items-center gap-1.5 text-[11px] text-ink-3">
         <span>Less</span>
         {[0, 25, 50, 75, 100].map((pct) => (
           <div
@@ -129,9 +94,7 @@ export default function CalendarScreen() {
           const offset = (firstDay.getDay() + 6) % 7
           return (
             <div key={mi} ref={mi === currentMonth ? currentMonthRef : null}>
-              <div className="eyebrow" style={{ marginBottom: 6 }}>
-                {MONTHS[mi]}
-              </div>
+              <div className="eyebrow mb-1.5">{MONTHS[mi]}</div>
               <div
                 style={{
                   display: 'grid',

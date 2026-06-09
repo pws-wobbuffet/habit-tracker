@@ -36,21 +36,10 @@ export function HabitRow({ habit }: Props) {
     <div
       {...longPressHandlers}
       onClick={handleClick}
-      className={`hrow${isCompleted ? ' done' : ''}${justDone ? ' just-done' : ''}`}
+      className={`hrow relative flex cursor-pointer items-center gap-[13px] overflow-hidden rounded-[14px] border border-line bg-surface px-[15px] py-[13px] select-none${isCompleted ? ' done' : ''}${justDone ? ' just-done' : ''}`}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 13,
-        padding: '13px 15px',
-        background: 'var(--surface)',
-        border: '1px solid var(--line)',
-        borderRadius: 14,
         boxShadow: 'var(--shadow-sm)',
         transition: 'transform .16s var(--ease-out), background .2s',
-        position: 'relative',
-        overflow: 'hidden',
-        userSelect: 'none',
-        cursor: 'pointer',
       }}
     >
       {/* Sweep animation div */}
@@ -58,16 +47,9 @@ export function HabitRow({ habit }: Props) {
 
       {/* Emoji box */}
       <div
+        className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[12px] text-[20px]"
         style={{
-          width: 42,
-          height: 42,
-          borderRadius: 12,
           background: `color-mix(in srgb, ${habit.hex} 18%, transparent)`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 20,
-          flexShrink: 0,
           transform: isCompleted ? 'scale(1.06)' : 'scale(1)',
           transition: 'transform .2s',
         }}
@@ -76,31 +58,13 @@ export function HabitRow({ habit }: Props) {
       </div>
 
       {/* Body */}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="min-w-0 flex-1">
         <div
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            color: 'var(--ink)',
-            textDecoration: isCompleted ? 'line-through' : 'none',
-            opacity: isCompleted ? 0.6 : 1,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
+          className={`truncate text-[15px] font-semibold text-ink${isCompleted ? ' line-through opacity-60' : ''}`}
         >
           {habit.name}
         </div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            marginTop: 3,
-            fontSize: 12,
-            color: 'var(--ink-3)',
-          }}
-        >
+        <div className="mt-[3px] flex items-center gap-1.5 text-xs text-ink-3">
           <span>{scheduleLabel(habit.schedule)}</span>
           {habit.target && (
             <>
@@ -127,16 +91,10 @@ export function HabitRow({ habit }: Props) {
 
       {/* Check circle */}
       <div
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
         style={{
-          width: 28,
-          height: 28,
-          borderRadius: '50%',
           border: `2px solid ${isCompleted ? habit.hex : 'var(--line-strong)'}`,
           background: isCompleted ? habit.hex : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
           transform: isCompleted ? 'scale(1.05)' : 'scale(1)',
           transition: 'background .2s, border-color .2s, transform .2s var(--ease-spring)',
         }}

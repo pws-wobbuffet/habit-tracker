@@ -61,96 +61,64 @@ export function VoiceMemoTab({ habitId: _ }: Props) {
   const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost'
 
   return (
-    <div style={{ paddingBottom: 16 }}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 12,
-          padding: '16px 0',
-        }}
-      >
+    <div className="pb-4">
+      <div className="flex flex-col items-center gap-3 py-4">
         {micState === 'recording' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="flex items-center gap-2">
             <div
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: '#e05858',
-                animation: 'pulse 1s infinite',
-              }}
+              className="h-2 w-2 rounded-full"
+              style={{ background: '#e05858', animation: 'pulse 1s infinite' }}
             />
-            <span style={{ fontSize: 14, fontFamily: 'monospace', color: 'var(--ink)' }}>
-              {fmt(seconds)}
-            </span>
+            <span className="font-mono text-sm text-ink">{fmt(seconds)}</span>
           </div>
         )}
 
         <button
           onClick={micState === 'recording' ? stopRecording : startRecording}
+          className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-none"
           style={{
-            width: 64,
-            height: 64,
-            borderRadius: '50%',
-            border: 'none',
-            cursor: 'pointer',
             background: micState === 'recording' ? '#e05858' : 'var(--accent)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             boxShadow: 'var(--shadow-md)',
             opacity: micState === 'denied' || micState === 'unavailable' ? 0.4 : 1,
           }}
         >
           {micState === 'recording' ? (
-            <div style={{ width: 20, height: 20, background: '#fff', borderRadius: 4 }} />
+            <div className="h-5 w-5 rounded bg-white" />
           ) : (
             <MicIcon size={24} style={{ color: '#fff' }} />
           )}
         </button>
 
-        {micState === 'idle' && (
-          <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>Tap to record</p>
-        )}
-        {micState === 'recording' && (
-          <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>Tap to stop</p>
-        )}
+        {micState === 'idle' && <p className="text-xs text-ink-3">Tap to record</p>}
+        {micState === 'recording' && <p className="text-xs text-ink-3">Tap to stop</p>}
         {micState === 'denied' && (
           <div
+            className="max-w-[260px] rounded-[10px] border px-4 py-2.5 text-center"
             style={{
-              textAlign: 'center',
-              padding: '10px 16px',
-              borderRadius: 10,
               background: 'color-mix(in srgb, #e05858 12%, var(--surface))',
-              border: '1px solid color-mix(in srgb, #e05858 30%, transparent)',
-              maxWidth: 260,
+              borderColor: 'color-mix(in srgb, #e05858 30%, transparent)',
             }}
           >
-            <p style={{ fontSize: 13, fontWeight: 600, color: '#e05858', margin: '0 0 4px' }}>
+            <p className="m-0 mb-1 text-[13px] font-semibold" style={{ color: '#e05858' }}>
               Microphone access denied
             </p>
-            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: 0 }}>
+            <p className="m-0 text-xs text-ink-3">
               Allow microphone access in your browser settings and try again.
             </p>
           </div>
         )}
         {micState === 'unavailable' && (
           <div
+            className="max-w-[260px] rounded-[10px] border px-4 py-2.5 text-center"
             style={{
-              textAlign: 'center',
-              padding: '10px 16px',
-              borderRadius: 10,
               background: 'color-mix(in srgb, #e05858 12%, var(--surface))',
-              border: '1px solid color-mix(in srgb, #e05858 30%, transparent)',
-              maxWidth: 260,
+              borderColor: 'color-mix(in srgb, #e05858 30%, transparent)',
             }}
           >
-            <p style={{ fontSize: 13, fontWeight: 600, color: '#e05858', margin: '0 0 4px' }}>
+            <p className="m-0 mb-1 text-[13px] font-semibold" style={{ color: '#e05858' }}>
               Microphone not available
             </p>
-            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: 0 }}>
+            <p className="m-0 text-xs text-ink-3">
               {isSecure
                 ? 'No microphone was found on this device.'
                 : 'Voice recording requires a secure connection. Open the app over HTTPS to use this feature.'}
@@ -160,31 +128,14 @@ export function VoiceMemoTab({ habitId: _ }: Props) {
       </div>
 
       {clips.length > 0 && (
-        <div
-          style={{
-            maxHeight: 192,
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-          }}
-        >
+        <div className="flex max-h-48 flex-col gap-2 overflow-y-auto">
           {clips.map((clip) => (
             <div
               key={clip.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                background: 'var(--surface-2)',
-                borderRadius: 10,
-                padding: '8px 12px',
-              }}
+              className="flex items-center gap-2.5 rounded-[10px] bg-surface-2 px-3 py-2"
             >
-              <audio controls src={clip.url} style={{ height: 32, flex: 1 }} />
-              <span style={{ fontSize: 11, color: 'var(--ink-3)', whiteSpace: 'nowrap' }}>
-                {fmt(clip.duration)}
-              </span>
+              <audio controls src={clip.url} className="h-8 flex-1" />
+              <span className="text-[11px] whitespace-nowrap text-ink-3">{fmt(clip.duration)}</span>
             </div>
           ))}
         </div>

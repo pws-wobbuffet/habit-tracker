@@ -16,22 +16,17 @@ interface ColorPickerProps {
 
 export function ColorPicker({ value, onChange }: ColorPickerProps) {
   return (
-    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+    <div className="flex flex-wrap gap-2.5">
       {PALETTE.map((c) => (
         <button
           key={c.hex}
           title={c.name}
           onClick={() => onChange(c.hex)}
+          className="h-[34px] w-[34px] cursor-pointer rounded-full border-none transition-[transform,box-shadow] duration-200"
           style={{
-            width: 34,
-            height: 34,
-            borderRadius: '50%',
             background: c.hex,
-            border: 'none',
-            cursor: 'pointer',
             boxShadow: value === c.hex ? `0 0 0 3px var(--surface), 0 0 0 5px ${c.hex}` : undefined,
             transform: value === c.hex ? 'scale(1.1)' : 'scale(1)',
-            transition: 'transform .2s, box-shadow .2s',
           }}
         />
       ))}

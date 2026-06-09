@@ -32,54 +32,27 @@ export function HabitSheet({ habitId }: Props) {
 
   return (
     <Sheet open={true} onClose={closeSheet}>
-      <div style={{ padding: '0 20px 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+      <div className="px-5 pb-5">
+        <div className="mb-4 flex items-center gap-3">
           <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 11,
-              background: `color-mix(in srgb, ${habit.hex} 18%, var(--surface-2))`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 20,
-            }}
+            className="flex h-10 w-10 items-center justify-center rounded-[11px] text-[20px]"
+            style={{ background: `color-mix(in srgb, ${habit.hex} 18%, var(--surface-2))` }}
           >
             {habit.icon}
           </div>
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: 'var(--ink)' }}>
-            {habit.name}
-          </h2>
+          <h2 className="m-0 text-[17px] font-bold text-ink">{habit.name}</h2>
         </div>
 
         {/* Tab bar */}
-        <div
-          style={{
-            display: 'flex',
-            background: 'var(--surface-2)',
-            borderRadius: 11,
-            padding: 3,
-            marginBottom: 16,
-          }}
-        >
+        <div className="mb-4 flex rounded-[11px] bg-surface-2 p-[3px]">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              style={{
-                flex: 1,
-                padding: '7px 0',
-                fontSize: 13.5,
-                fontWeight: 600,
-                borderRadius: 8,
-                border: 'none',
-                cursor: 'pointer',
-                background: activeTab === t.id ? 'var(--surface)' : 'transparent',
-                color: activeTab === t.id ? 'var(--ink)' : 'var(--ink-3)',
-                boxShadow: activeTab === t.id ? 'var(--shadow-sm)' : 'none',
-                transition: 'background .2s, color .2s',
-              }}
+              className={`flex-1 cursor-pointer rounded-[8px] border-none py-[7px] text-[13.5px] font-semibold transition-[background,color] duration-200 ${
+                activeTab === t.id ? 'bg-surface text-ink' : 'bg-transparent text-ink-3'
+              }`}
+              style={{ boxShadow: activeTab === t.id ? 'var(--shadow-sm)' : 'none' }}
             >
               {t.label}
             </button>

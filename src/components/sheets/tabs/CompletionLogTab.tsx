@@ -12,66 +12,20 @@ export function CompletionLogTab({ completions }: Props) {
   const sorted = [...completions].sort((a, b) => b.date.localeCompare(a.date))
 
   return (
-    <div style={{ paddingBottom: 16 }}>
-      <div
-        style={{
-          maxHeight: 240,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 6,
-        }}
-      >
+    <div className="pb-4">
+      <div className="flex max-h-60 flex-col gap-1.5 overflow-y-auto">
         {sorted.length === 0 && (
-          <p
-            style={{
-              fontSize: 13,
-              color: 'var(--ink-3)',
-              textAlign: 'center',
-              padding: '16px 0',
-            }}
-          >
-            No completions yet
-          </p>
+          <p className="py-4 text-center text-[13px] text-ink-3">No completions yet</p>
         )}
         {sorted.map((c) => (
           <div
             key={c.id}
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 10,
-              background: 'var(--surface-2)',
-              borderRadius: 10,
-              padding: '8px 12px',
-            }}
+            className="flex items-start gap-2.5 rounded-[10px] bg-surface-2 px-3 py-2"
           >
-            <div
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: 'var(--good)',
-                marginTop: 4,
-                flexShrink: 0,
-              }}
-            />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{c.date}</div>
-              {c.note && (
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: 'var(--ink)',
-                    marginTop: 2,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {c.note}
-                </div>
-              )}
+            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-good" />
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] text-ink-3">{c.date}</div>
+              {c.note && <div className="mt-0.5 truncate text-[13px] text-ink">{c.note}</div>}
             </div>
           </div>
         ))}
@@ -83,17 +37,7 @@ export function CompletionLogTab({ completions }: Props) {
             closeSheet()
             navigate(`/habit/${completions[0].habitId}`)
           }}
-          style={{
-            marginTop: 12,
-            width: '100%',
-            padding: '8px 0',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 13,
-            fontWeight: 600,
-            color: 'var(--accent)',
-          }}
+          className="mt-3 w-full cursor-pointer border-none bg-none py-2 text-[13px] font-semibold text-accent"
         >
           View full history
         </button>

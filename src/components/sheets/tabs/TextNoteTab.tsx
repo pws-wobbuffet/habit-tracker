@@ -35,57 +35,23 @@ export function TextNoteTab({ habitId, completions }: Props) {
         placeholder="How did it go today?"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{
-          width: '100%',
-          resize: 'none',
-          borderRadius: 10,
-          border: '1px solid var(--line)',
-          background: 'var(--surface-2)',
-          padding: '10px 12px',
-          fontSize: 14,
-          color: 'var(--ink)',
-          outline: 'none',
-          fontFamily: 'inherit',
-          boxSizing: 'border-box',
-        }}
+        className="box-border w-full resize-none rounded-[10px] border border-line bg-surface-2 px-3 py-2.5 font-[inherit] text-sm text-ink outline-none"
       />
       <button
         onClick={handleSave}
         disabled={!text.trim()}
-        style={{
-          marginTop: 8,
-          width: '100%',
-          padding: '10px 0',
-          borderRadius: 10,
-          border: 'none',
-          background: 'var(--accent)',
-          color: 'var(--on-accent)',
-          fontWeight: 600,
-          fontSize: 14,
-          cursor: text.trim() ? 'pointer' : 'not-allowed',
-          opacity: text.trim() ? 1 : 0.4,
-        }}
+        className="mt-2 w-full cursor-pointer rounded-[10px] border-none bg-accent py-2.5 text-sm font-semibold text-on-accent disabled:cursor-not-allowed disabled:opacity-40"
       >
         Save note
       </button>
 
       {notedCompletions.length > 0 && (
-        <div style={{ marginTop: 16, maxHeight: 160, overflowY: 'auto' }}>
-          <div className="eyebrow" style={{ marginBottom: 8 }}>
-            Past notes
-          </div>
+        <div className="mt-4 max-h-40 overflow-y-auto">
+          <div className="eyebrow mb-2">Past notes</div>
           {notedCompletions.slice(0, 10).map((c) => (
-            <div
-              key={c.id}
-              style={{
-                background: 'var(--surface-2)',
-                borderRadius: 10,
-                padding: '8px 12px',
-                marginBottom: 6,
-              }}
-            >
-              <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{c.date}</div>
-              <div style={{ fontSize: 13, color: 'var(--ink)', marginTop: 2 }}>{c.note}</div>
+            <div key={c.id} className="mb-1.5 rounded-[10px] bg-surface-2 px-3 py-2">
+              <div className="text-[11px] text-ink-3">{c.date}</div>
+              <div className="mt-0.5 text-[13px] text-ink">{c.note}</div>
             </div>
           ))}
         </div>

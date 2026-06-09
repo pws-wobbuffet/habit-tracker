@@ -71,26 +71,11 @@ export default function AchievementsScreen() {
   const maxDayHabits = Math.max(0, ...Object.values(countsByDate))
 
   return (
-    <div
-      className="scrollable scroll"
-      style={{
-        height: '100%',
-        padding: '10px 18px 100px',
-        background: 'var(--bg)',
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 22,
-          fontWeight: 800,
-          letterSpacing: '-0.02em',
-          color: 'var(--ink)',
-          margin: '10px 0 16px',
-        }}
-      >
+    <div className="scrollable scroll h-full bg-bg px-[18px] pt-2.5 pb-[100px]">
+      <h1 className="mt-2.5 mb-4 text-[22px] font-extrabold tracking-[-0.02em] text-ink">
         Achievements
       </h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="flex flex-col gap-3">
         {ACHIEVEMENTS.map((a) => {
           const prog = a.progress(streak, totalCompletions, maxDayHabits, bestStreak)
           const unlocked = prog >= a.target
@@ -99,70 +84,37 @@ export default function AchievementsScreen() {
           return (
             <div
               key={a.id}
-              className="card"
+              className="card flex items-start gap-3.5 p-4"
               style={{
-                padding: 16,
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 14,
                 opacity: unlocked ? 1 : 0.92,
                 background: unlocked ? 'var(--accent-soft)' : 'var(--surface)',
               }}
             >
               <span
-                style={{
-                  fontSize: 32,
-                  flexShrink: 0,
-                  filter: unlocked ? 'none' : 'grayscale(1) opacity(.5)',
-                }}
+                className="shrink-0 text-[32px]"
+                style={{ filter: unlocked ? 'none' : 'grayscale(1) opacity(.5)' }}
               >
                 {a.icon}
               </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>
-                    {a.name}
-                  </span>
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-center gap-2">
+                  <span className="text-[15px] font-bold text-ink">{a.name}</span>
                   {unlocked && (
-                    <span
-                      className="eyebrow"
-                      style={{
-                        background: 'var(--accent)',
-                        color: 'var(--on-accent)',
-                        padding: '2px 7px',
-                        borderRadius: 20,
-                        fontSize: 9,
-                      }}
-                    >
+                    <span className="eyebrow rounded-[20px] bg-accent px-[7px] py-0.5 text-[9px] text-on-accent">
                       UNLOCKED
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 8 }}>
-                  {a.description}
-                </div>
+                <div className="mb-2 text-xs text-ink-3">{a.description}</div>
                 {!unlocked && (
                   <>
-                    <div
-                      style={{
-                        height: 6,
-                        borderRadius: 4,
-                        background: 'var(--surface-2)',
-                        overflow: 'hidden',
-                        marginBottom: 4,
-                      }}
-                    >
+                    <div className="mb-1 h-1.5 overflow-hidden rounded bg-surface-2">
                       <div
-                        style={{
-                          height: '100%',
-                          width: `${pct}%`,
-                          background: 'var(--ink-3)',
-                          borderRadius: 4,
-                          transition: 'width .8s',
-                        }}
+                        className="h-full rounded bg-ink-3"
+                        style={{ width: `${pct}%`, transition: 'width .8s' }}
                       />
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>
+                    <div className="text-[11px] text-ink-3">
                       {prog} / {a.target}
                     </div>
                   </>

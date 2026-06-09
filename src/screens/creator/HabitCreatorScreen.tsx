@@ -24,55 +24,22 @@ export default function HabitCreatorScreen() {
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        background: 'var(--bg)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <div className="flex h-full flex-col bg-bg">
       {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          padding: '14px 18px',
-          borderBottom: '1px solid var(--line)',
-        }}
-      >
+      <div className="flex items-center gap-3 border-b border-line px-[18px] py-3.5">
         <button
           onClick={() => navigate(-1)}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--accent)',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '4px 0',
-          }}
+          className="flex cursor-pointer items-center border-none bg-none py-1 text-accent"
         >
           <ChevLeftIcon size={20} />
         </button>
-        <h1
-          style={{
-            fontSize: 17,
-            fontWeight: 700,
-            color: 'var(--ink)',
-            margin: 0,
-            flex: 1,
-          }}
-        >
-          New habit
-        </h1>
+        <h1 className="m-0 flex-1 text-[17px] font-bold text-ink">New habit</h1>
       </div>
 
       {/* Form */}
       <div
-        className="scrollable"
-        style={{ flex: 1, padding: '20px 18px calc(var(--safe-bottom) + 90px)', overflowY: 'auto' }}
+        className="scrollable flex-1 overflow-y-auto px-[18px] pt-5"
+        style={{ paddingBottom: 'calc(var(--safe-bottom) + 90px)' }}
       >
         <HabitForm onSave={handleCreate} onCancel={() => navigate(-1)} submitLabel="Create habit" />
       </div>

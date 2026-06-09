@@ -13,10 +13,8 @@ export function Sheet({ open, onClose, children, maxHeight = '85dvh' }: SheetPro
       {/* Backdrop */}
       <div
         onClick={onClose}
+        className="fixed inset-0 z-40"
         style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 40,
           background: 'rgba(8,10,16,.42)',
           backdropFilter: 'blur(2px)',
           opacity: open ? 1 : 0,
@@ -27,32 +25,17 @@ export function Sheet({ open, onClose, children, maxHeight = '85dvh' }: SheetPro
 
       {/* Sheet panel */}
       <div
+        className="fixed right-0 bottom-0 left-0 z-50 overflow-y-auto rounded-t-[24px] border-t border-line bg-surface"
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          background: 'var(--surface)',
-          borderRadius: '24px 24px 0 0',
-          borderTop: '1px solid var(--line)',
           maxHeight,
-          overflowY: 'auto',
           transform: open ? 'translateY(0)' : 'translateY(101%)',
-          transition: 'transform .35s cubic-bezier(.34,1.56,.64,1)',
+          transition: 'transform .35s var(--ease-spring)',
           paddingBottom: 'var(--safe-bottom)',
         }}
       >
         {/* Handle */}
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 6px' }}>
-          <div
-            style={{
-              width: 38,
-              height: 5,
-              borderRadius: 3,
-              background: 'var(--line-strong)',
-            }}
-          />
+        <div className="flex justify-center pt-3 pb-1.5">
+          <div className="h-[5px] w-[38px] rounded-[3px] bg-line-strong" />
         </div>
         {children}
       </div>
