@@ -3,7 +3,13 @@ import { AnimatePresence, m } from 'framer-motion'
 import { useProfileStore } from '../../store/profile'
 import { useUIStore } from '../../store/ui'
 import { Segmented } from '../../components/ui/Segmented'
-import { CheckIcon } from '../../components/icons'
+import { CheckIcon, GithubIcon, CoffeeIcon } from '../../components/icons'
+
+const LINKS = [
+  { label: 'Repo', href: 'https://github.com/pws-wobbuffet/habitus', Icon: GithubIcon },
+  { label: 'Coffee', href: 'https://buymeacoffee.com/pomaretta', Icon: CoffeeIcon },
+  { label: 'Creator', href: 'https://github.com/pomaretta', Icon: GithubIcon },
+]
 
 const ACCENT_OPTIONS = [
   { name: 'Indigo', hex: '#3b5bdb' },
@@ -91,6 +97,21 @@ export default function SettingsScreen() {
 
         {/* Info card */}
         <div className="card p-4 text-center text-xs text-ink-3">
+          <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+            {LINKS.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={label}
+                className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 font-semibold text-ink-2 transition-colors hover:text-ink"
+              >
+                <Icon size={15} />
+                {label}
+              </a>
+            ))}
+          </div>
           <p className="m-0 mb-1">habitus - open source</p>
           <p className="m-0">Joined {profile.joinDate}</p>
         </div>
