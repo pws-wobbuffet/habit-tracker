@@ -1,20 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useYearHeatmap } from '../../hooks/useProgress'
 import { useCompletionsStore } from '../../store/completions'
+import { useIsDesktop } from '../../hooks/useIsDesktop'
 import { Ring } from '../../components/charts/Ring'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-function useIsDesktop() {
-  const [v, setV] = useState(() => window.innerWidth >= 768)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)')
-    const h = (e: MediaQueryListEvent) => setV(e.matches)
-    mq.addEventListener('change', h)
-    return () => mq.removeEventListener('change', h)
-  }, [])
-  return v
-}
 
 export default function CalendarScreen() {
   const cells = useYearHeatmap()

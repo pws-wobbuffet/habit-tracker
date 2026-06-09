@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useHabitsStore } from '../../store/habits'
 import { SUGGESTIONS, SUGGESTION_CATEGORIES } from '../../lib/suggestions'
 import { generateId } from '../../lib/uuid'
 import { todayStr } from '../../lib/dates'
+import { useIsDesktop } from '../../hooks/useIsDesktop'
 import { SparkleIcon } from '../../components/icons'
 
 export default function OnboardingScreen() {
@@ -11,13 +12,7 @@ export default function OnboardingScreen() {
   const addHabit = useHabitsStore((s) => s.addHabit)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)')
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
+  const isDesktop = useIsDesktop()
 
   function toggle(name: string) {
     setSelected((prev) => {

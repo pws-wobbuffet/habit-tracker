@@ -18,18 +18,8 @@ import OverviewScreen from './screens/overview/OverviewScreen'
 import HabitsScreen from './screens/habits/HabitsScreen'
 import OnboardingScreen from './screens/onboarding/OnboardingScreen'
 import { useHabitsStore } from './store/habits'
+import { useIsDesktop } from './hooks/useIsDesktop'
 import type { CSSProperties } from 'react'
-
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)')
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
-  return isDesktop
-}
 
 function useSystemDark() {
   const [dark, setDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
