@@ -53,48 +53,17 @@ export function SideNav() {
     .slice(0, 2)
 
   return (
-    <aside
-      style={{
-        width: 224,
-        flexShrink: 0,
-        borderRight: '1px solid var(--line)',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '22px 14px',
-        background: 'var(--surface)',
-        height: '100%',
-      }}
-    >
+    <aside className="flex h-full w-[224px] shrink-0 flex-col border-r border-line bg-surface px-[14px] py-[22px]">
       {/* Header */}
-      <div style={{ padding: '0 10px 22px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 9,
-            background: 'var(--accent)',
-            color: 'var(--on-accent)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+      <div className="flex items-center gap-2.5 px-2.5 pb-[22px]">
+        <div className="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-accent text-on-accent">
           <SparkleIcon size={16} />
         </div>
-        <span
-          style={{
-            fontSize: 20,
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            color: 'var(--ink)',
-          }}
-        >
-          habitus
-        </span>
+        <span className="text-[20px] font-extrabold tracking-[-0.02em] text-ink">habitus</span>
       </div>
 
       {/* Nav items */}
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+      <nav className="flex flex-1 flex-col gap-0.5">
         {NAV_ITEMS.map((item) => {
           const isActive =
             item.path === '/'
@@ -105,24 +74,13 @@ export function SideNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '9px 12px',
-                borderRadius: 10,
-                border: 'none',
-                cursor: 'pointer',
-                background: isActive ? 'var(--surface-2)' : 'transparent',
-                color: isActive ? 'var(--ink)' : 'var(--ink-2)',
-                fontWeight: isActive ? 600 : 500,
-                fontSize: 14,
-                textAlign: 'left',
-                transition: 'background .15s, color .15s',
-                width: '100%',
-              }}
+              className={`flex w-full cursor-pointer items-center gap-2.5 rounded-[10px] border-none px-3 py-[9px] text-left text-sm transition-colors duration-150 ${
+                isActive
+                  ? 'bg-surface-2 font-semibold text-ink'
+                  : 'bg-transparent font-medium text-ink-2'
+              }`}
             >
-              <span style={{ color: isActive ? 'var(--accent)' : 'inherit' }}>
+              <span className={isActive ? 'text-accent' : ''}>
                 <Icon size={18} />
               </span>
               {item.label}
@@ -132,79 +90,20 @@ export function SideNav() {
       </nav>
 
       {/* Bottom section */}
-      <div style={{ marginTop: 'auto' }}>
+      <div className="mt-auto">
         <button
           onClick={cycleTheme}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '9px 12px',
-            borderRadius: 10,
-            border: 'none',
-            cursor: 'pointer',
-            background: 'transparent',
-            color: 'var(--ink-2)',
-            fontWeight: 500,
-            fontSize: 14,
-            width: '100%',
-            textAlign: 'left',
-          }}
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 py-[9px] text-left text-sm font-medium text-ink-2"
         >
-          <span
-            style={{
-              width: 32,
-              height: 32,
-              display: 'grid',
-              placeItems: 'center',
-              flexShrink: 0,
-            }}
-          >
-            {themeIcon}
-          </span>
+          <span className="grid h-8 w-8 shrink-0 place-items-center">{themeIcon}</span>
           {themeLabel}
         </button>
 
-        <div
-          style={{
-            borderTop: '1px solid var(--line)',
-            marginTop: 8,
-            paddingTop: 12,
-            paddingLeft: 12,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-          }}
-        >
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              background: 'var(--accent-soft)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 12,
-              fontWeight: 700,
-              color: 'var(--accent)',
-              flexShrink: 0,
-            }}
-          >
+        <div className="mt-2 flex items-center gap-2.5 border-t border-line pt-3 pl-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-xs font-bold text-accent">
             {initials || '?'}
           </div>
-          <span
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: 'var(--ink)',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {profile.name}
-          </span>
+          <span className="truncate text-[13px] font-semibold text-ink">{profile.name}</span>
         </div>
       </div>
     </aside>
