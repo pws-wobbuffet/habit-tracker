@@ -31,16 +31,26 @@ import { Aside } from '@astrojs/starlight/components'
 Defined in `src/types/index.ts`.
 
 ```ts
-type Schedule = 'daily' | 'weekly' | { days: number[] }
-//                                     days: 0=Sun, 1=Mon, ..., 6=Sat
+type Schedule =
+  | { type: 'daily' }
+  | { type: 'weekdays' }
+  | { type: 'days'; days: number[] } // 0=Mon, 1=Tue, ..., 6=Sun (Monday-based)
+  | { type: 'weekly'; perWeek?: number }
+
+interface HabitTarget {
+  unit: string // e.g. 'min', 'L', 'steps'
+  qty: number
+}
 
 interface Habit {
   id: string
   name: string
   icon: string // emoji
+  hex: string // habit color e.g. '#4caf63'
   schedule: Schedule
   isFavorite: boolean
   createdAt: string // "YYYY-MM-DD"
+  target?: HabitTarget // optional daily goal
 }
 
 interface Completion {
@@ -55,6 +65,7 @@ interface UserProfile {
   name: string
   joinDate: string // "YYYY-MM-DD"
   themeMode: 'light' | 'dark'
+  accent: string // hex accent color e.g. '#3b5bdb'
 }
 ```
 
@@ -177,42 +188,37 @@ const addHabit = useHabitsStore((s) => s.addHabit)
 
 `src/App.tsx` is the root component. It renders inside `src/main.tsx` after hydration.
 
+The layout is a responsive split keyed off a 768 px breakpoint (`useIsDesktop()` in `App.tsx`):
+
 ```
-App
-  IPhoneFrame
-    StatusBar
-    AnimatePresence (mode="wait")
-      Route /                -> TodayScreen
-      Route /create          -> HabitCreatorScreen
-      Route /calendar        -> CalendarScreen
-      Route /analytics       -> AnalyticsScreen
-      Route /achievements    -> AchievementsScreen
-      Route /settings        -> SettingsScreen
-      Route /habit/:id       -> HabitDetailScreen
-    BottomNav
-    HabitSheet  (portal, rendered when activeHabitId != null)
-    ToastContainer  (portal, fixed position)
-```
-
-### Page transitions
-
-Each screen wraps its root element with a Framer Motion variant:
-
-```ts
-const PAGE = {
-  initial: { x: '100%', opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: '-30%', opacity: 0 },
-  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-}
-// applied as <m.div {...PAGE}>
+App  (flex row, full height)
+  SideNav            -- desktop only (>= 768px)
+  [routed content]
+    Route /                -> OverviewScreen (desktop) / TodayScreen (mobile)
+                              -> OnboardingScreen when no habits exist yet
+    Route /overview        -> OverviewScreen
+    Route /create          -> HabitCreatorScreen
+    Route /calendar        -> CalendarScreen
+    Route /analytics       -> AnalyticsScreen
+    Route /achievements    -> AchievementsScreen
+    Route /habits          -> HabitsScreen
+    Route /settings        -> SettingsScreen
+    Route /habit/:id       -> HabitDetailScreen
+  FloatingNav        -- mobile only (< 768px), hidden during onboarding
+  HabitSheet  (portal on document.body, rendered when activeHabitId != null)
+  ToastContainer  (portal on document.body, fixed position)
 ```
 
-`AnimatePresence mode="wait"` ensures the exit animation finishes before the next screen mounts.
+The same `/` route renders `OverviewScreen` on desktop and `TodayScreen` on mobile; the active mode is recomputed live via a `matchMedia('(min-width: 768px)')` listener.
 
-### IPhoneFrame
+### Navigation
 
-On screens wider than the `md` breakpoint, `IPhoneFrame` renders a 390x844 device shell with a simulated Dynamic Island, giving the app a "demo on desktop" feel. On actual mobile devices the frame is transparent and the app fills the viewport.
+There is no device-frame shell; the app fills the viewport on every screen size. Which navigation renders is chosen at runtime:
+
+- **Desktop (>= 768px):** the left [`SideNav`](/components/#sidenav).
+- **Mobile (< 768px):** the floating glass-pill [`FloatingNav`](/components/#floatingnav) at the bottom, hidden during onboarding.
+
+Animation is loaded lazily via Framer Motion's `LazyMotion` (`domAnimation`); individual components animate themselves (e.g. `Sheet`, `Toast`) rather than a global route-transition wrapper.
 
 ---
 
@@ -234,24 +240,39 @@ Configuration lives in `vite.config.ts` under `VitePWA(...)`.
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 ```
 
-`viewport-fit=cover` is required for `env(safe-area-inset-*)` to work on notched devices. `StatusBar` and `BottomNav` pad themselves using these insets.
+`viewport-fit=cover` is required for `env(safe-area-inset-*)` to work on notched devices. `globals.css` exposes these as `--safe-top` and `--safe-bottom`; the app root pads its top with `--safe-top`, and `FloatingNav`, `Sheet`, `ToastContainer`, and the screens pad their bottom against `--safe-bottom`.
 
 ---
 
 ## Styling
 
-Tailwind CSS 4 is configured via `@theme` blocks in `src/styles/globals.css` rather than a JS config file. The custom palette:
+Hybrid Tailwind CSS 4: utility classes (`bg-surface`, `text-ink`, `border-line`, ...) for static styling, with inline `style={{}}` reserved for computed or bespoke values (e.g. `color-mix(in srgb, ${habit.hex} ...)`, dynamic positions, animated offsets).
 
-| Token        | Value     | Use                     |
-| ------------ | --------- | ----------------------- |
-| `parchment`  | `#f5f2ec` | App background          |
-| `surface`    | `#fffef9` | Card backgrounds        |
-| `accent`     | `#c17a3a` | Primary accent color    |
-| `green`      | `#3a8a5a` | Completed state         |
-| `text`       | `#2d2a24` | Body text               |
-| `muted`      | `#9a9080` | Secondary text          |
-| `dark-strip` | `#1e1b16` | SummaryStrip background |
+The design tokens are runtime CSS custom properties defined on `<html>` (and `html[data-mode='...']`). An `@theme inline` block in `src/styles/globals.css` bridges each token into a Tailwind color so utilities resolve to the same `var()` and stay theme- and accent-aware automatically:
 
-Fonts are loaded from Google Fonts: **Fraunces** (display/headings) and **DM Sans** (body).
+```css
+@theme inline {
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  /* ... */
+}
+```
 
-The `.scrollable` utility class applies `-webkit-overflow-scrolling: touch` for momentum scrolling on iOS.
+Core tokens: `--bg`, `--surface` / `--surface-2` / `--surface-3`, `--line` / `--line-strong`, `--ink` / `--ink-2` / `--ink-3`, `--accent` / `--accent-2` / `--accent-soft`, `--on-accent`, `--good`, `--ring-track`. The accent trio is overwritten at runtime in `App.tsx` from the user's chosen accent color.
+
+### Themes
+
+Three palettes are selected by a `data-mode` attribute on `<html>`:
+
+| Mode         | When                     |
+| ------------ | ------------------------ |
+| `light`      | default (no `data-mode`) |
+| `dark-oled`  | dark mode on mobile      |
+| `dark-slate` | dark mode on desktop     |
+
+The mode is computed in `App.tsx` from the theme setting (`auto` follows `prefers-color-scheme`) and the desktop/mobile breakpoint.
+
+The display font is **Geist**, loaded from Google Fonts.
+
+The `.scrollable` utility class enables momentum scrolling for touch devices.

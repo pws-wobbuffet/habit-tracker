@@ -89,13 +89,13 @@ habit-tracker/
 │   ├── lib/                    Pure utility functions (dates, streaks, schedule)
 │   ├── screens/                One folder per route (today/, creator/, calendar/, ...)
 │   ├── components/
-│   │   ├── layout/             IPhoneFrame, StatusBar, BottomNav
-│   │   ├── sheets/             BottomSheet, HabitSheet, tab components
-│   │   ├── ui/                 StreakChip, FavoriteStar, ScheduleLabel, Toast
-│   │   └── charts/             HeatmapGrid
-│   ├── styles/                 globals.css (palette, Tailwind), animations.css
+│   │   ├── layout/             SideNav (desktop), FloatingNav (mobile)
+│   │   ├── sheets/             Sheet, HabitSheet, tab components
+│   │   ├── ui/                 Segmented, ColorPicker, EmojiPicker, ScheduleEditor, Toast, ...
+│   │   └── charts/             Ring, Bars, Area, ConsBar, DOW
+│   ├── styles/                 globals.css (tokens, Tailwind theme), animations.css
 │   ├── main.tsx                Bootstrap: hydrate stores, seed dev data
-│   └── App.tsx                 Root: routing, IPhoneFrame, portals
+│   └── App.tsx                 Root: responsive nav + routing, portals
 ├── server/                     Optional Bun HTTP server (SQLite or Postgres backend)
 ├── docs/                       This Starlight documentation site
 ├── public/icons/               PWA icons (192, 512, apple variants)
@@ -115,7 +115,7 @@ habit-tracker/
    ```tsx
    <Route path="/myscreen" element={<MyScreen />} />
    ```
-3. Add a nav entry in `src/components/layout/BottomNav.tsx` if it needs a tab.
+3. If it needs a nav entry, add it to `src/components/layout/FloatingNav.tsx` (mobile tabs) and/or `src/components/layout/SideNav.tsx` (desktop items).
 
 ### Add a new habit field
 

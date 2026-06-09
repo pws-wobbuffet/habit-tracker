@@ -12,54 +12,42 @@ Shared components live in `src/components/` grouped into four subdirectories. Sc
 
 ## Layout
 
-### `IPhoneFrame`
+The app picks one nav at runtime based on a 768 px breakpoint: `SideNav` on desktop, `FloatingNav` on mobile. See [Architecture](/architecture/) for the responsive split.
 
-**File:** `src/components/layout/IPhoneFrame.tsx`
+### `SideNav`
 
-Wraps the entire app. On screens wider than Tailwind's `md` breakpoint it renders a 390x844 device shell with a Dynamic Island notch, giving the app a polished "preview on desktop" appearance. On actual mobile devices the wrapper is transparent and the app fills the viewport natively.
+**File:** `src/components/layout/SideNav.tsx`
 
-```tsx
-<IPhoneFrame>{children}</IPhoneFrame>
-```
+The desktop (>= 768 px) left sidebar. Renders the profile, a column of nav items (Overview, Analytics, Calendar, Habits, Awards, Settings) using the icon set from `src/components/icons`, and a theme cycle button (auto / light / dark). The active item is highlighted using the `accent` color, derived from `useLocation()`.
 
-### `StatusBar`
+### `FloatingNav`
 
-**File:** `src/components/layout/StatusBar.tsx`
+**File:** `src/components/layout/FloatingNav.tsx`
 
-Renders the iOS-style top bar: current time (live), signal dots, WiFi icon, and battery icon. Uses inline SVGs; no icon library required.
-
-Pads itself using `env(safe-area-inset-top)` so it sits correctly below the Dynamic Island on notched devices. The padding is exposed as `--safe-top` in `globals.css`.
-
-### `BottomNav`
-
-**File:** `src/components/layout/BottomNav.tsx`
-
-Five-tab navigation bar with `NavLink` from React Router. Tabs: Today, Calendar, Stats, Awards, Settings. Each tab has a custom inline SVG icon and a label.
-
-The active tab is highlighted using the `accent` color via NavLink's `isActive` state. Pads its bottom with `env(safe-area-inset-bottom)` plus 8 px.
+The mobile (< 768 px) navigation: a fixed, blurred glass pill centered at the bottom of the viewport. Five tabs (Today, Calendar, Stats, Awards, Settings) each with an inline SVG icon, plus a sliding indicator whose left offset is computed from the active tab index. Sits above the safe-area bottom inset via `bottom: calc(var(--safe-bottom) + 14px)`.
 
 ---
 
 ## Sheets
 
-The sheet pattern is: `HabitSheet` (logic + content) wraps `BottomSheet` (drag-to-dismiss animation). Both are rendered as portals outside the scroll container in `App.tsx`.
+The sheet pattern is: `HabitSheet` (logic + content) wraps `Sheet` (slide-up panel + backdrop). It is rendered as a portal on `document.body` from `App.tsx` when `activeHabitId` is set.
 
-### `BottomSheet`
+### `Sheet`
 
-**File:** `src/components/sheets/BottomSheet.tsx`
+**File:** `src/components/sheets/Sheet.tsx`
 
 **Props:**
 
 ```ts
-{ onClose: () => void; children: ReactNode }
+{ open: boolean; onClose: () => void; children: ReactNode; maxHeight?: string }
 ```
 
-A drag-to-dismiss bottom sheet built on Framer Motion:
+A bottom-anchored slide-up panel:
 
-- Slides up from the bottom (`y: '100%'` to `y: 0`)
-- Draggable on the `y` axis; snaps closed if dragged down more than 80 px or with velocity above 300 px/s
-- Semi-transparent backdrop; tapping it calls `onClose`
-- Shows a handle bar at the top
+- Translates in from the bottom (`translateY(101%)` to `translateY(0)`) on `open`, transitioning with `var(--ease-spring)`
+- Semi-transparent, blurred backdrop; tapping it calls `onClose`
+- Shows a handle bar at the top and pads its bottom with `var(--safe-bottom)`
+- `maxHeight` defaults to `85dvh`
 
 ### `HabitSheet`
 
@@ -73,13 +61,15 @@ A drag-to-dismiss bottom sheet built on Framer Motion:
 }
 ```
 
-Wraps `BottomSheet` and renders three tabs for the selected habit:
+Wraps `Sheet` and renders tabs for the selected habit:
 
 | Tab   | Component          | What it does                                       |
 | ----- | ------------------ | -------------------------------------------------- |
 | Note  | `TextNoteTab`      | Add / view text notes on completions               |
 | Voice | `VoiceMemoTab`     | Record and play back audio memos                   |
 | Log   | `CompletionLogTab` | Browse all past completions; link to detail screen |
+
+The Voice tab is only shown when `navigator.mediaDevices.getUserMedia` is available.
 
 **`TextNoteTab`** (`sheets/tabs/TextNoteTab.tsx`): textarea to save a text note. Shows the last 10 notes with their dates. Prevents duplicate same-day completions.
 
@@ -133,6 +123,54 @@ Converts a `Schedule` value to a human-readable label:
 - `'weekly'` → "Weekly"
 - `{ days: [1, 3, 5] }` → "Mon, Wed, Fri"
 
+### `Segmented`
+
+**File:** `src/components/ui/Segmented.tsx`
+
+**Props:**
+
+```ts
+{ options: { value: string; label: string }[]; value: string; onChange: (v: string) => void; small?: boolean }
+```
+
+A segmented control: a row of buttons over a sliding indicator whose width and `translateX` offset are computed from the option count and selected index. Used by `ScheduleEditor` and elsewhere for small two/three-way choices. Covered by a unit test in `src/components/ui/Segmented.test.tsx`.
+
+### `ColorPicker`
+
+**File:** `src/components/ui/ColorPicker.tsx`
+
+**Props:**
+
+```ts
+{ value: string; onChange: (hex: string) => void }
+```
+
+A swatch grid over a fixed 8-color palette (Moss, Teal, Ocean, Iris, Amber, Rose, Clay, Sky). The selected swatch is scaled up and ringed. `value`/`onChange` are the habit's `hex` color.
+
+### `EmojiPicker`
+
+**File:** `src/components/ui/EmojiPicker.tsx`
+
+**Props:**
+
+```ts
+{ value: string; onChange: (emoji: string) => void }
+```
+
+A grid of preset emoji for a habit's icon; the selected emoji is highlighted.
+
+### `ScheduleEditor`
+
+**File:** `src/components/ui/ScheduleEditor.tsx`
+
+**Props:**
+
+```ts
+{ value: Schedule; onChange: (s: Schedule) => void }
+```
+
+Edits a habit's `Schedule`. A `Segmented` control switches between Daily, Weekdays, and Custom; in Custom mode it shows a Mon-Sun day toggle row that builds a `{ type: 'days', days: number[] }` value.
+
 ### `Toast`
 
 **File:** `src/components/ui/Toast.tsx`
@@ -155,32 +193,73 @@ Clickable to dismiss. Animated via Framer Motion layout.
 
 **File:** `src/components/ui/ToastContainer.tsx`
 
-No props. Reads `toasts` from `useUIStore` and renders each as a `Toast`. Fixed position at the bottom of the viewport, above `BottomNav`, respecting the safe area bottom inset. Uses `AnimatePresence` with `mode="popLayout"` for smooth add/remove animations.
+No props. Reads `toasts` from `useUIStore` and renders each as a `Toast`. Fixed and centered near the bottom of the viewport (`bottom: calc(var(--safe-bottom) + 80px)`), clearing the `FloatingNav` and the safe-area bottom inset. Uses `AnimatePresence` with `mode="popLayout"` for smooth add/remove animations.
 
 ---
 
 ## Charts
 
-### `HeatmapGrid`
+All charts are presentational SVG / flexbox primitives in `src/components/charts/`. They take plain data arrays and default their color to `var(--accent)`. The calendar's year heatmap is **not** a chart component; it is rendered inline in `CalendarScreen` (see [Screens](/screens/)).
 
-**File:** `src/components/charts/HeatmapGrid.tsx`
+### `Ring`
+
+**File:** `src/components/charts/Ring.tsx`
+
+**Props:**
+
+```ts
+{ pct: number; size?: number; stroke?: number; color?: string; track?: string; children?: ReactNode }
+```
+
+An SVG progress ring. Draws a track circle and a foreground arc whose `strokeDashoffset` is computed from `pct` (clamped 0-100) and animated via a CSS transition. Centers its `children` (e.g. the percentage label). Used by `TodayScreen` for the today summary and by `CalendarScreen` for the selected-day detail.
+
+### `Bars`
+
+**File:** `src/components/charts/Bars.tsx`
+
+**Props:**
+
+```ts
+{ data: Array<{ pct: number; done: number; due: number }>; height?: number; color?: string }
+```
+
+A flex row of vertical bars, one per data point, each scaled to its `pct`.
+
+### `Area`
+
+**File:** `src/components/charts/Area.tsx`
+
+**Props:**
+
+```ts
+{ data: Array<{ pct: number }>; color?: string; width?: number; height?: number; fill?: boolean }
+```
+
+An SVG line/area sparkline over a series of percentages. Returns `null` for fewer than two points.
+
+### `ConsBar`
+
+**File:** `src/components/charts/ConsBar.tsx`
 
 **Props:**
 
 ```ts
 {
-  countsByDate: Record<string, number>
+  pct: number
+  color: string
 }
 ```
 
-A year-view heatmap. Renders 12 columns (one per month), each with cells for every calendar day. Cell intensity is mapped from the completion count:
+A single horizontal consistency bar: a track with a fill whose width is `pct%`, animated via a CSS width transition.
 
-| Count | CSS class           |
-| ----- | ------------------- |
-| 0     | Empty (border only) |
-| 1     | `bg-accent/20`      |
-| 2     | `bg-accent/40`      |
-| 3     | `bg-accent/70`      |
-| 4+    | `bg-accent`         |
+### `DOW`
 
-Future dates are rendered as empty. Each cell shows the day number. Used by `CalendarScreen`.
+**File:** `src/components/charts/DOW.tsx`
+
+**Props:**
+
+```ts
+{ data: Array<{ label: string; pct: number }>; color?: string }
+```
+
+A day-of-week bar chart. Bars are scaled relative to the highest `pct`, and the best day is emphasized.

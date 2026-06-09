@@ -6,7 +6,7 @@ draft: false
 description: Every screen in the app, its route, file location, and what it renders.
 ---
 
-Each screen lives in its own folder under `src/screens/`. The route is registered in `src/App.tsx`. All screens wrap their root element in a Framer Motion `<m.div>` with shared page-transition variants.
+Each screen lives in its own folder under `src/screens/`. The route is registered in `src/App.tsx`.
 
 ---
 
@@ -14,43 +14,32 @@ Each screen lives in its own folder under `src/screens/`. The route is registere
 
 **File:** `src/screens/today/TodayScreen.tsx`
 
-The main dashboard. Shows habits due today, the week strip, and overall progress.
+The mobile dashboard (rendered at `/` when the viewport is below 768 px; on wider viewports `/` renders the desktop `OverviewScreen` instead). Shows habits due today, the week strip, and overall progress.
 
 ### Component tree
 
 ```
 TodayScreen
-  StatusBar
   [scrollable area]
-    GreetingHeader     -- time-of-day greeting + rotating motivational quote
-    SummaryStrip       -- dark banner with ProgressRing and StreakBadge
-    WeekStrip          -- 7-day selector (Mon to Sun)
-    HabitList          -- today's scheduled habits; empty state if none
+    header              -- date eyebrow, greeting, tagline (inline)
+    summary card        -- Ring (today's percent) + current/best streak (inline)
+    week strip          -- 7-day row, Mon to Sun, completion-aware fill (inline)
+    HabitRow[]          -- today's scheduled habits; empty-state text if none
+    + FAB               -- floating "add habit" button -> /create
 ```
 
-### Subcomponents
+The progress ring is the shared [`Ring`](/components/#ring) chart used directly; the header, summary card, and week strip are rendered inline in `TodayScreen` rather than as separate components.
 
-| File                 | What it renders                                                                                |
-| -------------------- | ---------------------------------------------------------------------------------------------- |
-| `GreetingHeader.tsx` | "Good morning", today's date, a rotating motto keyed to the day                                |
-| `SummaryStrip.tsx`   | Dark strip container for the ring and streak                                                   |
-| `ProgressRing.tsx`   | SVG circle (`r=45`, `stroke-dasharray=283`); `strokeDashoffset` animates via Framer spring     |
-| `StreakBadge.tsx`    | "🔥 N day streak" label                                                                        |
-| `WeekStrip.tsx`      | Row of 7 `DayCell` components; tapping a past/current day toggles all completions for that day |
-| `DayCell.tsx`        | Single day cell: letter, date number, green dot if any completions exist                       |
-| `HabitList.tsx`      | Maps `useTodayHabits()` to `HabitCard`; shows an "Add your first habit" CTA when empty         |
-| `HabitCard.tsx`      | See below                                                                                      |
+### HabitRow
 
-### HabitCard
-
-`src/screens/today/HabitCard.tsx`
+`src/screens/today/HabitRow.tsx`
 
 - **Tap**: toggles today's completion (via `useToggleCompletion`)
-- **Long-press (500 ms)**: opens the `HabitSheet` for this habit (via `useUIStore.openSheet`)
-- **Completion state**: green background, strikethrough name, checkmark, animated sweep
-- **Icon bounce**: Framer `scale: [1, 1.25, 1]` on completion
-- **Favorite star**: `FavoriteStar` in the trailing position; tap stops propagation and calls `toggleFavorite`
-- Shows: habit icon, name, `ScheduleLabel`, `StreakChip`
+- **Long-press (500 ms)**: opens the `HabitSheet` for this habit (via `useUIStore.openSheet`, using `useLongPress`)
+- **Completion state**: accent-tinted background, strikethrough name, checkmark, animated sweep keyed off the habit's `hex`
+- Shows: habit icon, name, schedule label, streak
+
+`HabitRow` is also reused by the Habits screen (`src/screens/habits/HabitsScreen.tsx`).
 
 ---
 
@@ -71,10 +60,11 @@ Form for adding a new habit.
 
 **File:** `src/screens/calendar/CalendarScreen.tsx`
 
-Year-at-a-glance heatmap of all completions across all habits.
+Year-at-a-glance heatmap of completion rates across all habits.
 
-- Uses `HeatmapGrid` with a `countsByDate` map built from `useCompletionsStore`
-- Intensity: 0 completions = empty; 1 = light; 2 = medium; 3 = strong; 4+ = darkest accent
+- The heatmap is rendered inline in `CalendarScreen` (12 month grids of day cells), not via a separate component. Day data comes from `useYearHeatmap()`.
+- Each day cell is gradient-filled: a `linear-gradient` with `color-mix(in srgb, var(--accent) 40%, var(--surface-2))` rising to the day's completion percentage. Future days and 0% days show the empty surface color.
+- Tapping a day opens a detail card with a `Ring` showing that day's percentage and the count of habits completed.
 
 ---
 
