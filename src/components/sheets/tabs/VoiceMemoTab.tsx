@@ -1,12 +1,16 @@
+import { generateId } from '../../../lib/uuid'
 import { useState, useRef } from 'react'
 import { useUIStore } from '../../../store/ui'
+import { MicIcon } from '../../icons'
 
 interface Props {
   habitId: string
 }
 
+type MicState = 'idle' | 'recording' | 'denied' | 'unavailable'
+
 export function VoiceMemoTab({ habitId: _ }: Props) {
-  const [recording, setRecording] = useState(false)
+  const [micState, setMicState] = useState<MicState>('idle')
   const [seconds, setSeconds] = useState(0)
   const [clips, setClips] = useState<{ id: string; url: string; duration: number }[]>([])
   const recorderRef = useRef<MediaRecorder | null>(null)
@@ -16,7 +20,7 @@ export function VoiceMemoTab({ habitId: _ }: Props) {
 
   async function startRecording() {
     if (!navigator.mediaDevices?.getUserMedia) {
-      pushToast('Microphone not available', 'error')
+      setMicState('unavailable')
       return
     }
     try {
@@ -27,64 +31,152 @@ export function VoiceMemoTab({ habitId: _ }: Props) {
       recorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
         const url = URL.createObjectURL(blob)
-        setClips((prev) => [...prev, { id: crypto.randomUUID(), url, duration: seconds }])
+        setClips((prev) => [...prev, { id: generateId(), url, duration: seconds }])
         stream.getTracks().forEach((t) => t.stop())
         pushToast('Voice memo saved', 'success')
       }
       recorderRef.current = recorder
       recorder.start()
-      setRecording(true)
+      setMicState('recording')
       setSeconds(0)
       timerRef.current = setInterval(() => setSeconds((s) => s + 1), 1000)
-    } catch {
-      pushToast('Could not access microphone', 'error')
+    } catch (err) {
+      const name = (err as DOMException).name
+      if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
+        setMicState('denied')
+      } else {
+        setMicState('unavailable')
+      }
     }
   }
 
   function stopRecording() {
     recorderRef.current?.stop()
     if (timerRef.current) clearInterval(timerRef.current)
-    setRecording(false)
+    setMicState('idle')
   }
 
   const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
 
+  const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost'
+
   return (
-    <div className="pb-4">
-      <div className="flex flex-col items-center gap-3 py-4">
-        {recording && (
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-sm font-mono text-text">{fmt(seconds)}</span>
+    <div style={{ paddingBottom: 16 }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+          padding: '16px 0',
+        }}
+      >
+        {micState === 'recording' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: '#e05858',
+                animation: 'pulse 1s infinite',
+              }}
+            />
+            <span style={{ fontSize: 14, fontFamily: 'monospace', color: 'var(--ink)' }}>
+              {fmt(seconds)}
+            </span>
           </div>
         )}
+
         <button
-          onClick={recording ? stopRecording : startRecording}
-          className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-colors ${
-            recording ? 'bg-red-500' : 'bg-accent'
-          }`}
+          onClick={micState === 'recording' ? stopRecording : startRecording}
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            border: 'none',
+            cursor: 'pointer',
+            background: micState === 'recording' ? '#e05858' : 'var(--accent)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 'var(--shadow-md)',
+            opacity: micState === 'denied' || micState === 'unavailable' ? 0.4 : 1,
+          }}
         >
-          {recording ? (
-            <div className="w-5 h-5 bg-white rounded" />
+          {micState === 'recording' ? (
+            <div style={{ width: 20, height: 20, background: '#fff', borderRadius: 4 }} />
           ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-              <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-              <path d="M19 10v2a7 7 0 01-14 0v-2H3v2a9 9 0 008 8.94V23h2v-2.06A9 9 0 0021 12v-2h-2z" />
-            </svg>
+            <MicIcon size={24} style={{ color: '#fff' }} />
           )}
         </button>
-        <p className="text-xs text-muted">{recording ? 'Tap to stop' : 'Tap to record'}</p>
+
+        {micState === 'idle' && (
+          <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>Tap to record</p>
+        )}
+        {micState === 'recording' && (
+          <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>Tap to stop</p>
+        )}
+        {micState === 'denied' && (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '10px 16px',
+              borderRadius: 10,
+              background: 'color-mix(in srgb, #e05858 12%, var(--surface))',
+              border: '1px solid color-mix(in srgb, #e05858 30%, transparent)',
+              maxWidth: 260,
+            }}
+          >
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#e05858', margin: '0 0 4px' }}>
+              Microphone access denied
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: 0 }}>
+              Allow microphone access in your browser settings and try again.
+            </p>
+          </div>
+        )}
+        {micState === 'unavailable' && (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '10px 16px',
+              borderRadius: 10,
+              background: 'color-mix(in srgb, #e05858 12%, var(--surface))',
+              border: '1px solid color-mix(in srgb, #e05858 30%, transparent)',
+              maxWidth: 260,
+            }}
+          >
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#e05858', margin: '0 0 4px' }}>
+              Microphone not available
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: 0 }}>
+              {isSecure
+                ? 'No microphone was found on this device.'
+                : 'Voice recording requires a secure connection. Open the app over HTTPS to use this feature.'}
+            </p>
+          </div>
+        )}
       </div>
 
       {clips.length > 0 && (
-        <div className="space-y-2 max-h-48 scrollable">
+        <div style={{ maxHeight: 192, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
           {clips.map((clip) => (
             <div
               key={clip.id}
-              className="flex items-center gap-3 bg-parchment/60 rounded-lg px-3 py-2"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                background: 'var(--surface-2)',
+                borderRadius: 10,
+                padding: '8px 12px',
+              }}
             >
-              <audio controls src={clip.url} className="h-8 flex-1" />
-              <span className="text-xs text-muted whitespace-nowrap">{fmt(clip.duration)}</span>
+              <audio controls src={clip.url} style={{ height: 32, flex: 1 }} />
+              <span style={{ fontSize: 11, color: 'var(--ink-3)', whiteSpace: 'nowrap' }}>
+                {fmt(clip.duration)}
+              </span>
             </div>
           ))}
         </div>

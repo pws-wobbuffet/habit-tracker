@@ -6,7 +6,7 @@ interface Props {
 
 export function IPhoneFrame({ children }: Props) {
   return (
-    <div className="h-screen bg-parchment md:flex md:items-center md:justify-center md:min-h-screen md:bg-gray-200">
+    <div className="h-dvh bg-parchment md:flex md:items-center md:justify-center md:min-h-screen md:bg-gray-200">
       <div className="relative h-full bg-parchment md:h-[844px] md:w-[390px] md:overflow-hidden md:rounded-[3rem] md:shadow-2xl">
         {/* Dynamic Island — desktop only */}
         <div

@@ -8,12 +8,21 @@ export function ToastContainer() {
 
   return (
     <div
-      className="fixed left-1/2 -translate-x-1/2 flex flex-col gap-2 z-[100] pointer-events-none"
-      style={{ bottom: 'calc(var(--safe-bottom) + 80px)' }}
+      style={{
+        position: 'fixed',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+        zIndex: 100,
+        pointerEvents: 'none',
+        bottom: 'calc(var(--safe-bottom) + 80px)',
+      }}
     >
       <AnimatePresence mode="popLayout">
         {toasts.map((t) => (
-          <div key={t.id} className="pointer-events-auto">
+          <div key={t.id} style={{ pointerEvents: 'auto' }}>
             <Toast toast={t} onDismiss={dismissToast} />
           </div>
         ))}

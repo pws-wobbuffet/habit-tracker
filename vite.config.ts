@@ -32,7 +32,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        clientsClaim: false,
+        clientsClaim: true,
+        skipWaiting: true,
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html,ico,png,woff2}'],
         runtimeCaching: [

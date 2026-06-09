@@ -68,3 +68,30 @@ export function getGreeting(): string {
   if (h < 17) return 'Good afternoon'
   return 'Good evening'
 }
+
+export function addDays(d: Date, n: number): Date {
+  const x = new Date(d)
+  x.setDate(x.getDate() + n)
+  return x
+}
+
+export function startOfWeek(d: Date): Date {
+  // Monday-start
+  const x = new Date(d)
+  const wd = (x.getDay() + 6) % 7
+  return addDays(x, -wd)
+}
+
+export function isSameDay(a: Date, b: Date): boolean {
+  return formatDate(a) === formatDate(b)
+}
+
+// "Mon, Jun 9"
+export function formatShort(d: Date): string {
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+}
+
+// "Monday, June 9"
+export function formatLong(d: Date): string {
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+}

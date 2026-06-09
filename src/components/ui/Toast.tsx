@@ -6,10 +6,10 @@ interface Props {
   onDismiss(id: string): void
 }
 
-const COLORS: Record<ToastType['type'], string> = {
-  success: 'bg-green text-white',
-  info: 'bg-text text-white',
-  error: 'bg-red-600 text-white',
+const BG: Record<ToastType['type'], string> = {
+  success: '#22a35a',
+  info: '#1c1e2e',
+  error: '#e05858',
 }
 
 export function Toast({ toast, onDismiss }: Props) {
@@ -20,8 +20,19 @@ export function Toast({ toast, onDismiss }: Props) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -10, scale: 0.95 }}
       transition={{ duration: 0.25 }}
-      className={`px-4 py-3 rounded-2xl shadow-lg text-sm font-medium cursor-pointer select-none ${COLORS[toast.type]}`}
       onClick={() => onDismiss(toast.id)}
+      style={{
+        padding: '11px 18px',
+        borderRadius: 14,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: 'pointer',
+        userSelect: 'none',
+        background: BG[toast.type],
+        color: '#ffffff',
+        whiteSpace: 'nowrap',
+      }}
     >
       {toast.message}
     </m.div>

@@ -17,6 +17,9 @@ docs/dist
 .env.*
 !.env.example
 
+# Agent / assistant session data
+.claude
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

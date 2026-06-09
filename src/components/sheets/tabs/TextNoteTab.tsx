@@ -1,3 +1,4 @@
+import { generateId } from '../../../lib/uuid'
 import { useState } from 'react'
 import { useCompletionsStore } from '../../../store/completions'
 import { useUIStore } from '../../../store/ui'
@@ -21,7 +22,7 @@ export function TextNoteTab({ habitId, completions }: Props) {
     if (!text.trim()) return
     const today = todayStr()
     if (!isCompleted(habitId, today)) {
-      await addCompletion({ id: crypto.randomUUID(), habitId, date: today, note: text.trim() })
+      await addCompletion({ id: generateId(), habitId, date: today, note: text.trim() })
     }
     setText('')
     pushToast('Note saved', 'success')
@@ -30,27 +31,61 @@ export function TextNoteTab({ habitId, completions }: Props) {
   return (
     <div>
       <textarea
-        className="w-full resize-none rounded-xl border border-black/10 bg-parchment/50 p-3 text-sm text-text placeholder:text-muted outline-none focus:ring-2 focus:ring-accent/30 scrollable"
         rows={4}
         placeholder="How did it go today?"
         value={text}
         onChange={(e) => setText(e.target.value)}
+        style={{
+          width: '100%',
+          resize: 'none',
+          borderRadius: 10,
+          border: '1px solid var(--line)',
+          background: 'var(--surface-2)',
+          padding: '10px 12px',
+          fontSize: 14,
+          color: 'var(--ink)',
+          outline: 'none',
+          fontFamily: 'inherit',
+          boxSizing: 'border-box',
+        }}
       />
       <button
         onClick={handleSave}
         disabled={!text.trim()}
-        className="mt-2 w-full py-2.5 rounded-xl bg-accent text-white text-sm font-semibold disabled:opacity-40 transition-opacity"
+        style={{
+          marginTop: 8,
+          width: '100%',
+          padding: '10px 0',
+          borderRadius: 10,
+          border: 'none',
+          background: 'var(--accent)',
+          color: 'var(--on-accent)',
+          fontWeight: 600,
+          fontSize: 14,
+          cursor: text.trim() ? 'pointer' : 'not-allowed',
+          opacity: text.trim() ? 1 : 0.4,
+        }}
       >
         Save note
       </button>
 
       {notedCompletions.length > 0 && (
-        <div className="mt-4 space-y-2 max-h-40 scrollable">
-          <p className="text-xs font-medium text-muted uppercase tracking-wide">Past notes</p>
+        <div style={{ marginTop: 16, maxHeight: 160, overflowY: 'auto' }}>
+          <div className="eyebrow" style={{ marginBottom: 8 }}>
+            Past notes
+          </div>
           {notedCompletions.slice(0, 10).map((c) => (
-            <div key={c.id} className="bg-parchment/60 rounded-lg px-3 py-2">
-              <p className="text-xs text-muted">{c.date}</p>
-              <p className="text-sm text-text mt-0.5">{c.note}</p>
+            <div
+              key={c.id}
+              style={{
+                background: 'var(--surface-2)',
+                borderRadius: 10,
+                padding: '8px 12px',
+                marginBottom: 6,
+              }}
+            >
+              <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{c.date}</div>
+              <div style={{ fontSize: 13, color: 'var(--ink)', marginTop: 2 }}>{c.note}</div>
             </div>
           ))}
         </div>

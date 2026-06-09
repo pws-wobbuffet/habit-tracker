@@ -1,3 +1,4 @@
+import { generateId } from '../../lib/uuid'
 import { getWeekDays } from '../../lib/dates'
 import { DayCell } from './DayCell'
 import { useHabitsStore } from '../../store/habits'
@@ -20,7 +21,7 @@ export function WeekStrip() {
       pushToast('Day cleared', 'info')
     } else {
       await Promise.all(
-        habits.map((h) => addCompletion({ id: crypto.randomUUID(), habitId: h.id, date: dateStr })),
+        habits.map((h) => addCompletion({ id: generateId(), habitId: h.id, date: dateStr })),
       )
       pushToast('All habits marked!', 'success')
     }

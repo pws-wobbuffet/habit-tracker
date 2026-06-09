@@ -11,6 +11,17 @@ import { useProfileStore } from './store/profile'
 import { backend } from './storage'
 import { SEEDS } from './lib/seeds'
 
+// When a new service worker activates, reload to serve fresh assets
+if ('serviceWorker' in navigator) {
+  let reloading = false
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!reloading) {
+      reloading = true
+      window.location.reload()
+    }
+  })
+}
+
 async function bootstrap() {
   await Promise.all([
     useHabitsStore.getState().hydrate(),

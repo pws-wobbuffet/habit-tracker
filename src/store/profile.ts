@@ -7,6 +7,7 @@ const DEFAULT_PROFILE: UserProfile = {
   name: 'You',
   joinDate: todayStr(),
   themeMode: 'light',
+  accent: '#3b5bdb',
 }
 
 interface ProfileState {

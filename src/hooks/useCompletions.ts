@@ -1,3 +1,4 @@
+import { generateId } from '../lib/uuid'
 import { useCompletionsStore } from '../store/completions'
 import { useUIStore } from '../store/ui'
 import { todayStr } from '../lib/dates'
@@ -19,7 +20,7 @@ export function useToggleCompletion() {
       }
     } else {
       const completion: Completion = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         habitId,
         date,
       }

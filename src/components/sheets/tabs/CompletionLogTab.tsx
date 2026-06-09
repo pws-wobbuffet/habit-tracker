@@ -12,17 +12,58 @@ export function CompletionLogTab({ completions }: Props) {
   const sorted = [...completions].sort((a, b) => b.date.localeCompare(a.date))
 
   return (
-    <div className="pb-4">
-      <div className="max-h-60 scrollable space-y-1.5">
+    <div style={{ paddingBottom: 16 }}>
+      <div style={{ maxHeight: 240, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
         {sorted.length === 0 && (
-          <p className="text-sm text-muted text-center py-4">No completions yet</p>
+          <p
+            style={{
+              fontSize: 13,
+              color: 'var(--ink-3)',
+              textAlign: 'center',
+              padding: '16px 0',
+            }}
+          >
+            No completions yet
+          </p>
         )}
         {sorted.map((c) => (
-          <div key={c.id} className="flex items-start gap-3 bg-parchment/60 rounded-lg px-3 py-2">
-            <div className="w-2 h-2 rounded-full bg-green mt-1.5 shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-muted">{c.date}</p>
-              {c.note && <p className="text-sm text-text mt-0.5 truncate">{c.note}</p>}
+          <div
+            key={c.id}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 10,
+              background: 'var(--surface-2)',
+              borderRadius: 10,
+              padding: '8px 12px',
+            }}
+          >
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: 'var(--good)',
+                marginTop: 4,
+                flexShrink: 0,
+              }}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{c.date}</div>
+              {c.note && (
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: 'var(--ink)',
+                    marginTop: 2,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {c.note}
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -34,9 +75,19 @@ export function CompletionLogTab({ completions }: Props) {
             closeSheet()
             navigate(`/habit/${completions[0].habitId}`)
           }}
-          className="mt-3 w-full py-2 text-sm text-accent font-medium"
+          style={{
+            marginTop: 12,
+            width: '100%',
+            padding: '8px 0',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 13,
+            fontWeight: 600,
+            color: 'var(--accent)',
+          }}
         >
-          View full history →
+          View full history
         </button>
       )}
     </div>

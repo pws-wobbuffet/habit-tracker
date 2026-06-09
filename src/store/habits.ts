@@ -10,6 +10,7 @@ interface HabitsState {
   updateHabit(habit: Habit): Promise<void>
   deleteHabit(id: string): Promise<void>
   toggleFavorite(id: string): Promise<void>
+  reorderHabits(ids: string[]): Promise<void>
 }
 
 export const useHabitsStore = create<HabitsState>((set, get) => ({
@@ -42,5 +43,19 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
     const updated = { ...habit, isFavorite: !habit.isFavorite }
     await backend.putHabit(updated)
     set((s) => ({ habits: s.habits.map((h) => (h.id === id ? updated : h)) }))
+  },
+
+  async reorderHabits(ids) {
+    const current = get().habits
+    const ordered: Habit[] = []
+    for (const id of ids) {
+      const h = current.find((x) => x.id === id)
+      if (h) ordered.push(h)
+    }
+    // Append any habits not in ids list
+    for (const h of current) {
+      if (!ids.includes(h.id)) ordered.push(h)
+    }
+    set({ habits: ordered })
   },
 }))
