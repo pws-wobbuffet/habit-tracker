@@ -8,7 +8,7 @@ Mobile-first PWA for daily habit tracking. Offline-first, installable to your ho
 - Long-press any habit to add a text note or voice memo
 - Calendar heatmap across the whole year
 - Streak tracking and achievement badges
-- Pluggable storage: IndexedDB (default), SQLite WASM, or remote REST backend
+- Pluggable storage: IndexedDB (default) or remote REST backend
 
 ## Quick start
 
@@ -29,11 +29,10 @@ Open the dev (or production) URL in Safari on iOS, tap Share, then **Add to Home
 
 Copy `.env.example` to `.env` and set `VITE_STORAGE_BACKEND`:
 
-| Value         | Description                                     |
-| ------------- | ----------------------------------------------- |
-| `idb`         | IndexedDB (default, offline, no server needed)  |
-| `sqlite-wasm` | SQLite in the browser via WASM + OPFS           |
-| `remote`      | HTTP REST -- requires the `server/` Bun backend |
+| Value    | Description                                     |
+| -------- | ----------------------------------------------- |
+| `idb`    | IndexedDB (default, offline, no server needed)  |
+| `remote` | HTTP REST -- requires the `server/` Bun backend |
 
 ## Development
 

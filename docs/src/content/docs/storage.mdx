@@ -69,15 +69,6 @@ The database is opened lazily on first access. The database name is `habit-track
 
 ---
 
-## SQLite WASM (`sqlite-wasm`)
-
-**File:** `src/storage/sqlite-wasm.ts`  
-**Activated by:** `VITE_STORAGE_BACKEND=sqlite-wasm`
-
-Stub implementation. All methods throw with a message pointing users to the IndexedDB fallback. The `@sqlite.org/sqlite-wasm` package is listed as an optional dependency but the integration is not yet complete.
-
----
-
 ## Remote REST (`remote`)
 
 **File:** `src/storage/remote.ts`  

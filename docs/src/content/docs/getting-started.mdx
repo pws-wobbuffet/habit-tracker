@@ -148,7 +148,7 @@ cp .env.example .env
 
 | Variable               | Default | Description                       |
 | ---------------------- | ------- | --------------------------------- |
-| `VITE_STORAGE_BACKEND` | `idb`   | `idb`, `sqlite-wasm`, or `remote` |
+| `VITE_STORAGE_BACKEND` | `idb`   | `idb` or `remote`                 |
 | `VITE_API_URL`         | (none)  | Required when backend is `remote` |
 
 All `VITE_*` variables are inlined at build time by Vite. Changing them requires a rebuild.

@@ -1,0 +1,5 @@
+# Generated / managed files — not ours to format
+pnpm-lock.yaml
+dist
+docs/dist
+docs/.astro

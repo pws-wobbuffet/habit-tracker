@@ -21,17 +21,10 @@ export function Toast({ toast, onDismiss }: Props) {
       exit={{ opacity: 0, y: -10, scale: 0.95 }}
       transition={{ duration: 0.25 }}
       onClick={() => onDismiss(toast.id)}
+      className="cursor-pointer rounded-[14px] px-[18px] py-[11px] text-[13px] font-semibold whitespace-nowrap text-white select-none"
       style={{
-        padding: '11px 18px',
-        borderRadius: 14,
         boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
-        fontSize: 13,
-        fontWeight: 600,
-        cursor: 'pointer',
-        userSelect: 'none',
         background: BG[toast.type],
-        color: '#ffffff',
-        whiteSpace: 'nowrap',
       }}
     >
       {toast.message}

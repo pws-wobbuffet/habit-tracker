@@ -86,11 +86,10 @@ interface CompletionFilter {
 
 `src/storage/index.ts` exports a module-level `backend` singleton. It reads `VITE_STORAGE_BACKEND` at startup and returns the matching implementation:
 
-| `VITE_STORAGE_BACKEND` | Class               | File                     |
-| ---------------------- | ------------------- | ------------------------ |
-| `idb` (default)        | `IDBBackend`        | `storage/idb.ts`         |
-| `sqlite-wasm`          | `SQLiteWasmBackend` | `storage/sqlite-wasm.ts` |
-| `remote`               | `RemoteBackend`     | `storage/remote.ts`      |
+| `VITE_STORAGE_BACKEND` | Class           | File                |
+| ---------------------- | --------------- | ------------------- |
+| `idb` (default)        | `IDBBackend`    | `storage/idb.ts`    |
+| `remote`               | `RemoteBackend` | `storage/remote.ts` |
 
 ### IndexedDB backend (`storage/idb.ts`)
 

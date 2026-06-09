@@ -6,5 +6,5 @@ interface Props {
 }
 
 export function ScheduleLabel({ schedule }: Props) {
-  return <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>{scheduleLabel(schedule)}</span>
+  return <span className="text-xs text-ink-3">{scheduleLabel(schedule)}</span>
 }
