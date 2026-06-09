@@ -34,3 +34,8 @@ docs/dist
 # Local screenshot artifacts
 /shots
 screenshot.mjs
+
+# Marketing capture tool + intermediates (only final media is committed)
+docs/media/capture.mjs
+docs/media/video/
+docs/media/_frames/

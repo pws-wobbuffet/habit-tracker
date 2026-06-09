@@ -10,6 +10,18 @@ Mobile-first PWA for daily habit tracking. Offline-first, installable to your ho
 - Streak tracking and achievement badges
 - Pluggable storage: IndexedDB (default) or remote REST backend
 
+## Demo
+
+| Complete a habit                                               | Add a habit                                           | Notes &amp; drag-to-dismiss                                       |
+| -------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------- |
+| ![Completing a habit](docs/media/gifs/flow-complete-habit.gif) | ![Adding a habit](docs/media/gifs/flow-add-habit.gif) | ![Long-press for notes](docs/media/gifs/flow-long-press-note.gif) |
+
+## Screens
+
+| Today                                        | Habit detail                                    | Calendar                                            | Analytics                                             |
+| -------------------------------------------- | ----------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------- |
+| ![Today](docs/media/screenshots/01-home.png) | ![Detail](docs/media/screenshots/02-detail.png) | ![Calendar](docs/media/screenshots/03-calendar.png) | ![Analytics](docs/media/screenshots/04-analytics.png) |
+
 ## Quick start
 
 ```sh
