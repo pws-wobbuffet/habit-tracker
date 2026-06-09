@@ -4,6 +4,7 @@ import { LazyMotion, domAnimation } from 'framer-motion'
 import { Route, Routes, useLocation } from 'react-router'
 import { SideNav } from './components/layout/SideNav'
 import { FloatingNav } from './components/layout/FloatingNav'
+import { OrientationLock } from './components/layout/OrientationLock'
 import { HabitSheet } from './components/sheets/HabitSheet'
 import { ToastContainer } from './components/ui/ToastContainer'
 import { useUIStore } from './store/ui'
@@ -105,6 +106,8 @@ export default function App() {
         </div>
 
         {!isDesktop && !showOnboarding && <FloatingNav />}
+
+        <OrientationLock />
       </div>
 
       {activeHabitId && createPortal(<HabitSheet habitId={activeHabitId} />, document.body)}
