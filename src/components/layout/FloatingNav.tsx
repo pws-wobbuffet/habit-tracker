@@ -1,5 +1,13 @@
 import { useLocation, useNavigate } from 'react-router'
-import { HomeIcon, HomeFillIcon, CalendarIcon, StatsIcon, StarIcon, StarFillIcon, GearIcon } from '../icons'
+import {
+  HomeIcon,
+  HomeFillIcon,
+  CalendarIcon,
+  StatsIcon,
+  StarIcon,
+  StarFillIcon,
+  GearIcon,
+} from '../icons'
 
 const TABS = [
   { path: '/', label: 'Today', Icon: HomeIcon, ActiveIcon: HomeFillIcon },

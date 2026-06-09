@@ -106,7 +106,9 @@ export function HabitRow({ habit }: Props) {
             <>
               <span>·</span>
               <span style={{ color: habit.hex, fontWeight: 600 }}>
-                {habit.target.unit === 'steps' ? `${habit.target.qty}k steps` : `${habit.target.qty} ${habit.target.unit}`}
+                {habit.target.unit === 'steps'
+                  ? `${habit.target.qty}k steps`
+                  : `${habit.target.qty} ${habit.target.unit}`}
               </span>
             </>
           )}
@@ -121,9 +123,7 @@ export function HabitRow({ habit }: Props) {
       </div>
 
       {/* Favorite star */}
-      {habit.isFavorite && (
-        <StarFillIcon size={16} style={{ color: '#e6a93a', flexShrink: 0 }} />
-      )}
+      {habit.isFavorite && <StarFillIcon size={16} style={{ color: '#e6a93a', flexShrink: 0 }} />}
 
       {/* Check circle */}
       <div

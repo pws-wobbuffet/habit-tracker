@@ -8,23 +8,28 @@ import { ScheduleEditor } from './ScheduleEditor'
 import { StarFillIcon, StarIcon, ChevLeftIcon } from '../icons'
 
 const UNITS: Array<{
-  id: string; label: string; short: string
-  min: number; max: number; step: number; def: number
+  id: string
+  label: string
+  short: string
+  min: number
+  max: number
+  step: number
+  def: number
 }> = [
-  { id: 'min',   label: 'Minutes',  short: 'min',   min: 5,    max: 180,   step: 5,    def: 30   },
-  { id: 'hr',    label: 'Hours',    short: 'hr',    min: 0.5,  max: 8,     step: 0.5,  def: 1    },
-  { id: 'L',     label: 'Liters',   short: 'L',     min: 0.25, max: 4,     step: 0.25, def: 2    },
-  { id: 'ml',    label: 'ml',       short: 'ml',    min: 100,  max: 2000,  step: 100,  def: 500  },
-  { id: 'km',    label: 'km',       short: 'km',    min: 0.5,  max: 30,    step: 0.5,  def: 5    },
-  { id: 'mi',    label: 'Miles',    short: 'mi',    min: 0.5,  max: 20,    step: 0.5,  def: 3    },
-  { id: 'x',     label: 'Times',    short: '×',     min: 1,    max: 30,    step: 1,    def: 3    },
-  { id: 'reps',  label: 'Reps',     short: 'reps',  min: 5,    max: 100,   step: 5,    def: 20   },
-  { id: 'pages', label: 'Pages',    short: 'pg',    min: 5,    max: 100,   step: 5,    def: 20   },
-  { id: 'steps', label: 'Steps',    short: 'k',     min: 1,    max: 20,    step: 0.5,  def: 8    },
-  { id: 'kcal',  label: 'Calories', short: 'kcal',  min: 50,   max: 1000,  step: 50,   def: 300  },
+  { id: 'min', label: 'Minutes', short: 'min', min: 5, max: 180, step: 5, def: 30 },
+  { id: 'hr', label: 'Hours', short: 'hr', min: 0.5, max: 8, step: 0.5, def: 1 },
+  { id: 'L', label: 'Liters', short: 'L', min: 0.25, max: 4, step: 0.25, def: 2 },
+  { id: 'ml', label: 'ml', short: 'ml', min: 100, max: 2000, step: 100, def: 500 },
+  { id: 'km', label: 'km', short: 'km', min: 0.5, max: 30, step: 0.5, def: 5 },
+  { id: 'mi', label: 'Miles', short: 'mi', min: 0.5, max: 20, step: 0.5, def: 3 },
+  { id: 'x', label: 'Times', short: '×', min: 1, max: 30, step: 1, def: 3 },
+  { id: 'reps', label: 'Reps', short: 'reps', min: 5, max: 100, step: 5, def: 20 },
+  { id: 'pages', label: 'Pages', short: 'pg', min: 5, max: 100, step: 5, def: 20 },
+  { id: 'steps', label: 'Steps', short: 'k', min: 1, max: 20, step: 0.5, def: 8 },
+  { id: 'kcal', label: 'Calories', short: 'kcal', min: 50, max: 1000, step: 50, def: 300 },
 ]
 
-function formatQty(unit: typeof UNITS[number], qty: number): string {
+function formatQty(unit: (typeof UNITS)[number], qty: number): string {
   if (unit.id === 'steps') return `${qty}k steps`
   if (unit.step < 1) return `${qty} ${unit.short}`
   return `${qty} ${unit.short}`
@@ -46,19 +51,19 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeCat, setActiveCat] = useState(SUGGESTION_CATEGORIES[0])
   const [targetEnabled, setTargetEnabled] = useState(!!initial?.target)
-  const [selectedUnit, setSelectedUnit] = useState<typeof UNITS[number]>(
-    initial?.target ? (UNITS.find(u => u.id === initial.target!.unit) ?? UNITS[0]) : UNITS[0]
+  const [selectedUnit, setSelectedUnit] = useState<(typeof UNITS)[number]>(
+    initial?.target ? (UNITS.find((u) => u.id === initial.target!.unit) ?? UNITS[0]) : UNITS[0],
   )
   const [qty, setQty] = useState<number>(initial?.target?.qty ?? UNITS[0].def)
 
-  function applySuggestion(s: typeof SUGGESTIONS[number]) {
+  function applySuggestion(s: (typeof SUGGESTIONS)[number]) {
     setName(s.name)
     setIcon(s.icon)
     setHex(s.hex)
     setSchedule(s.schedule)
     if (s.target) {
       setTargetEnabled(true)
-      const u = UNITS.find(u => u.id === s.target!.unit) ?? UNITS[0]
+      const u = UNITS.find((u) => u.id === s.target!.unit) ?? UNITS[0]
       setSelectedUnit(u)
       setQty(s.target.qty)
     } else {
@@ -67,7 +72,7 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
     setSuggestionsOpen(false)
   }
 
-  function handleUnitChange(unit: typeof UNITS[number]) {
+  function handleUnitChange(unit: (typeof UNITS)[number]) {
     setSelectedUnit(unit)
     setQty(unit.def)
   }
@@ -82,7 +87,6 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-
       {/* Suggestions dropdown */}
       <div
         style={{
@@ -125,7 +129,15 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
         {suggestionsOpen && (
           <div style={{ borderTop: '1px solid var(--line)', padding: '12px 16px 16px' }}>
             {/* Category tabs */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 14, overflowX: 'auto', paddingBottom: 2 }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: 6,
+                marginBottom: 14,
+                overflowX: 'auto',
+                paddingBottom: 2,
+              }}
+            >
               {SUGGESTION_CATEGORIES.map((cat) => (
                 <button
                   key={cat}
@@ -172,7 +184,8 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
                   <span>{s.name}</span>
                   {s.target && (
                     <span style={{ fontSize: 11, color: s.hex, fontWeight: 700 }}>
-                      {s.target.qty}{s.target.unit}
+                      {s.target.qty}
+                      {s.target.unit}
                     </span>
                   )}
                 </button>
@@ -286,7 +299,14 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
 
       {/* Target (optional) */}
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: targetEnabled ? 14 : 0 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: targetEnabled ? 14 : 0,
+          }}
+        >
           <label className="eyebrow">Target (optional)</label>
           <button
             onClick={() => setTargetEnabled(!targetEnabled)}
@@ -318,7 +338,8 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
                     padding: '6px 13px',
                     borderRadius: 20,
                     border: `1.5px solid ${selectedUnit.id === u.id ? 'var(--accent)' : 'var(--line)'}`,
-                    background: selectedUnit.id === u.id ? 'var(--accent-soft)' : 'var(--surface-2)',
+                    background:
+                      selectedUnit.id === u.id ? 'var(--accent-soft)' : 'var(--surface-2)',
                     color: selectedUnit.id === u.id ? 'var(--accent)' : 'var(--ink-2)',
                     fontSize: 13,
                     fontWeight: 600,
@@ -341,10 +362,19 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
               }}
             >
               <div style={{ textAlign: 'center', marginBottom: 14 }}>
-                <span style={{ fontSize: 36, fontWeight: 800, color: 'var(--accent)', letterSpacing: '-0.03em' }}>
+                <span
+                  style={{
+                    fontSize: 36,
+                    fontWeight: 800,
+                    color: 'var(--accent)',
+                    letterSpacing: '-0.03em',
+                  }}
+                >
                   {qty}
                 </span>
-                <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-3)', marginLeft: 5 }}>
+                <span
+                  style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-3)', marginLeft: 5 }}
+                >
                   {selectedUnit.short}
                 </span>
               </div>
@@ -357,9 +387,21 @@ export function HabitForm({ initial, onSave, onCancel, submitLabel = 'Save' }: H
                 onChange={(e) => setQty(Number(e.target.value))}
                 style={{ width: '100%', accentColor: 'var(--accent)', cursor: 'pointer' }}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontSize: 11, color: 'var(--ink-3)' }}>
-                <span>{selectedUnit.min} {selectedUnit.short}</span>
-                <span>{selectedUnit.max} {selectedUnit.short}</span>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: 4,
+                  fontSize: 11,
+                  color: 'var(--ink-3)',
+                }}
+              >
+                <span>
+                  {selectedUnit.min} {selectedUnit.short}
+                </span>
+                <span>
+                  {selectedUnit.max} {selectedUnit.short}
+                </span>
               </div>
             </div>
           </div>

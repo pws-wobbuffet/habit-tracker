@@ -3,10 +3,7 @@ import { useYearHeatmap } from '../../hooks/useProgress'
 import { useCompletionsStore } from '../../store/completions'
 import { Ring } from '../../components/charts/Ring'
 
-const MONTHS = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-]
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 function useIsDesktop() {
   const [v, setV] = useState(() => window.innerWidth >= 768)
@@ -175,11 +172,25 @@ export default function CalendarScreen() {
                         overflow: 'hidden',
                       }}
                     >
-                      <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-2)', lineHeight: 1 }}>
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: 'var(--ink-2)',
+                          lineHeight: 1,
+                        }}
+                      >
                         {cell.d.getDate()}
                       </span>
                       {!cell.future && cell.due > 0 && cell.pct > 0 && (
-                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: 'var(--accent)',
+                            lineHeight: 1,
+                          }}
+                        >
                           {cell.pct}%
                         </span>
                       )}
@@ -212,7 +223,14 @@ export default function CalendarScreen() {
                     >
                       {cell.d.getDate()}
                       {!cell.future && cell.due > 0 && cell.pct > 0 && (
-                        <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
+                        <span
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: 'var(--accent)',
+                            lineHeight: 1,
+                          }}
+                        >
                           {cell.pct}%
                         </span>
                       )}

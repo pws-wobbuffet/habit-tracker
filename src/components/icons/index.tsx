@@ -28,7 +28,14 @@ export function HomeIcon({ size = 24, className, style }: IconProps) {
 
 export function HomeFillIcon({ size = 24, className, style }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} style={style}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M12 3L21 10.6L18.5 10.6L18.5 20L5.5 20L5.5 10.6L3 10.6Z" />
     </svg>
   )

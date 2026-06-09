@@ -160,7 +160,15 @@ export function VoiceMemoTab({ habitId: _ }: Props) {
       </div>
 
       {clips.length > 0 && (
-        <div style={{ maxHeight: 192, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div
+          style={{
+            maxHeight: 192,
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
           {clips.map((clip) => (
             <div
               key={clip.id}

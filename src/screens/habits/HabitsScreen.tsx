@@ -221,7 +221,10 @@ export default function HabitsScreen() {
                 <th className="eyebrow" style={{ padding: '10px 12px', textAlign: 'left' }}>
                   Streak
                 </th>
-                <th className="eyebrow" style={{ padding: '10px 12px', textAlign: 'left', width: 120 }}>
+                <th
+                  className="eyebrow"
+                  style={{ padding: '10px 12px', textAlign: 'left', width: 120 }}
+                >
                   30d
                 </th>
                 <th style={{ padding: '10px 12px', width: 80 }} />

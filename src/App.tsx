@@ -58,14 +58,18 @@ export default function App() {
     const root = document.documentElement
     if (mode === 'light') root.removeAttribute('data-mode')
     else root.setAttribute('data-mode', mode)
-    root.style.background = mode === 'dark-oled' ? '#000000' : mode === 'dark-slate' ? '#0e1220' : '#f6f7f9'
+    root.style.background =
+      mode === 'dark-oled' ? '#000000' : mode === 'dark-slate' ? '#0e1220' : '#f6f7f9'
   }, [mode])
 
   useEffect(() => {
     const root = document.documentElement
     root.style.setProperty('--accent', accent)
     root.style.setProperty('--accent-2', `color-mix(in srgb, ${accent} 80%, #000)`)
-    root.style.setProperty('--accent-soft', `color-mix(in srgb, ${accent} ${theme === 'light' ? '14%' : '30%'}, var(--surface))`)
+    root.style.setProperty(
+      '--accent-soft',
+      `color-mix(in srgb, ${accent} ${theme === 'light' ? '14%' : '30%'}, var(--surface))`,
+    )
   }, [accent, theme])
 
   const accentStyle = {
@@ -99,7 +103,18 @@ export default function App() {
         >
           <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
             <Routes location={location}>
-              <Route path="/" element={showOnboarding ? <OnboardingScreen /> : isDesktop ? <OverviewScreen /> : <TodayScreen />} />
+              <Route
+                path="/"
+                element={
+                  showOnboarding ? (
+                    <OnboardingScreen />
+                  ) : isDesktop ? (
+                    <OverviewScreen />
+                  ) : (
+                    <TodayScreen />
+                  )
+                }
+              />
               <Route path="/overview" element={<OverviewScreen />} />
               <Route path="/create" element={<HabitCreatorScreen />} />
               <Route path="/calendar" element={<CalendarScreen />} />

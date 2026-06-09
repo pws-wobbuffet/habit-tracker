@@ -265,9 +265,7 @@ export default function HabitDetailScreen() {
                   }}
                 />
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>
-                    {c.date}
-                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>{c.date}</div>
                   {c.note && (
                     <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>
                       {c.note}

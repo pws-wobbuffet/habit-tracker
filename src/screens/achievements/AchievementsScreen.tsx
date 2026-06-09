@@ -7,7 +7,12 @@ interface Achievement {
   name: string
   description: string
   target: number
-  progress(streak: number, totalCompletions: number, maxDayHabits: number, bestStreak: number): number
+  progress(
+    streak: number,
+    totalCompletions: number,
+    maxDayHabits: number,
+    bestStreak: number,
+  ): number
 }
 
 const ACHIEVEMENTS: Achievement[] = [

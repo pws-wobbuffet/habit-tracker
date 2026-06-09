@@ -35,7 +35,14 @@ export function SideNav() {
     const next = THEME_CYCLE[(THEME_CYCLE.indexOf(theme) + 1) % THEME_CYCLE.length]
     setTheme(next)
   }
-  const themeIcon = theme === 'dark' ? <MoonIcon size={18} /> : theme === 'light' ? <SunIcon size={18} /> : <SparkleIcon size={18} />
+  const themeIcon =
+    theme === 'dark' ? (
+      <MoonIcon size={18} />
+    ) : theme === 'light' ? (
+      <SunIcon size={18} />
+    ) : (
+      <SparkleIcon size={18} />
+    )
   const themeLabel = theme === 'dark' ? 'Dark mode' : theme === 'light' ? 'Light mode' : 'Auto'
 
   const initials = profile.name

@@ -91,7 +91,11 @@ html[data-mode='dark-slate'] {
 }
 
 .app-root {
-  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Geist',
+    system-ui,
+    -apple-system,
+    sans-serif;
   background: var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;

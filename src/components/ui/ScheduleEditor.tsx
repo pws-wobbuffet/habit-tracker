@@ -10,11 +10,7 @@ const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 
 export function ScheduleEditor({ value, onChange }: ScheduleEditorProps) {
   const segValue =
-    value.type === 'daily'
-      ? 'daily'
-      : value.type === 'weekdays'
-        ? 'weekdays'
-        : 'custom'
+    value.type === 'daily' ? 'daily' : value.type === 'weekdays' ? 'weekdays' : 'custom'
 
   function handleSegChange(v: string) {
     if (v === 'daily') onChange({ type: 'daily' })

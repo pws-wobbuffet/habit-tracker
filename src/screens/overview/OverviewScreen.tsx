@@ -97,9 +97,7 @@ export default function OverviewScreen() {
   // Week avg vs prev week
   const last7 = series30.slice(-7)
   const prev7 = series30.slice(-14, -7)
-  const weekAvg = last7.length
-    ? Math.round(last7.reduce((s, d) => s + d.pct, 0) / last7.length)
-    : 0
+  const weekAvg = last7.length ? Math.round(last7.reduce((s, d) => s + d.pct, 0) / last7.length) : 0
   const prevWeekAvg = prev7.length
     ? Math.round(prev7.reduce((s, d) => s + d.pct, 0) / prev7.length)
     : 0
@@ -112,9 +110,7 @@ export default function OverviewScreen() {
     .slice(0, 3)
 
   const avg30 =
-    series30.length > 0
-      ? Math.round(series30.reduce((s, d) => s + d.pct, 0) / series30.length)
-      : 0
+    series30.length > 0 ? Math.round(series30.reduce((s, d) => s + d.pct, 0) / series30.length) : 0
 
   return (
     <div
@@ -329,10 +325,7 @@ export default function OverviewScreen() {
               {recentNotes.map((c) => {
                 const habit = habits.find((h) => h.id === c.habitId)
                 return (
-                  <div
-                    key={c.id}
-                    style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}
-                  >
+                  <div key={c.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                     <div
                       style={{
                         width: 8,

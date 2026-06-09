@@ -14,9 +14,7 @@ export default function AnalyticsScreen() {
   const { percent } = useTodayProgress()
   const streak = useOverallStreak()
   const totalCompletions = useCompletionsStore((s) => s.completions.length)
-  const totalDays = useCompletionsStore(
-    (s) => new Set(s.completions.map((c) => c.date)).size,
-  )
+  const totalDays = useCompletionsStore((s) => new Set(s.completions.map((c) => c.date)).size)
   const series30 = useCompletionSeries(30)
   const consistency = usePerHabitConsistency(30)
   const dowStats = useDayOfWeekStats()

@@ -70,12 +70,11 @@ export default function HabitCreatorScreen() {
       </div>
 
       {/* Form */}
-      <div className="scrollable" style={{ flex: 1, padding: '20px 18px calc(var(--safe-bottom) + 90px)', overflowY: 'auto' }}>
-        <HabitForm
-          onSave={handleCreate}
-          onCancel={() => navigate(-1)}
-          submitLabel="Create habit"
-        />
+      <div
+        className="scrollable"
+        style={{ flex: 1, padding: '20px 18px calc(var(--safe-bottom) + 90px)', overflowY: 'auto' }}
+      >
+        <HabitForm onSave={handleCreate} onCancel={() => navigate(-1)} submitLabel="Create habit" />
       </div>
     </div>
   )

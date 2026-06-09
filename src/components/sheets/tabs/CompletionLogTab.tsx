@@ -13,7 +13,15 @@ export function CompletionLogTab({ completions }: Props) {
 
   return (
     <div style={{ paddingBottom: 16 }}>
-      <div style={{ maxHeight: 240, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div
+        style={{
+          maxHeight: 240,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 6,
+        }}
+      >
         {sorted.length === 0 && (
           <p
             style={{

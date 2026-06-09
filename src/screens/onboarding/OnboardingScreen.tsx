@@ -43,8 +43,8 @@ export default function OnboardingScreen() {
           isFavorite: false,
           createdAt: todayStr(),
           target: s.target,
-        })
-      )
+        }),
+      ),
     )
     navigate('/', { replace: true })
   }
@@ -81,14 +81,30 @@ export default function OnboardingScreen() {
             >
               <SparkleIcon size={18} />
             </div>
-            <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+            <span
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                letterSpacing: '-0.02em',
+                color: 'var(--ink)',
+              }}
+            >
               habitus
             </span>
           </div>
         )}
-        <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--ink)', margin: '0 0 6px' }}>
+        <h1
+          style={{
+            fontSize: 26,
+            fontWeight: 800,
+            letterSpacing: '-0.03em',
+            color: 'var(--ink)',
+            margin: '0 0 6px',
+          }}
+        >
           Which habits do you
-          <br />want to build?
+          <br />
+          want to build?
         </h1>
         <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: '0 0 20px' }}>
           Pick a few to get started. You can always add or remove later.
@@ -97,7 +113,9 @@ export default function OnboardingScreen() {
         {/* Category tabs */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {SUGGESTION_CATEGORIES.map((cat) => {
-            const count = SUGGESTIONS.filter((s) => s.category === cat && selected.has(s.name)).length
+            const count = SUGGESTIONS.filter(
+              (s) => s.category === cat && selected.has(s.name),
+            ).length
             return (
               <a
                 key={cat}
@@ -115,7 +133,8 @@ export default function OnboardingScreen() {
                   textDecoration: 'none',
                 }}
               >
-                {cat}{count > 0 ? ` ${count}` : ''}
+                {cat}
+                {count > 0 ? ` ${count}` : ''}
               </a>
             )
           })}
@@ -126,7 +145,9 @@ export default function OnboardingScreen() {
       <div style={{ padding: '16px 22px 20px' }}>
         {SUGGESTION_CATEGORIES.map((cat) => (
           <div key={cat} id={`cat-${cat}`} style={{ marginBottom: 28 }}>
-            <div className="eyebrow" style={{ marginBottom: 12 }}>{cat}</div>
+            <div className="eyebrow" style={{ marginBottom: 12 }}>
+              {cat}
+            </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9 }}>
               {SUGGESTIONS.filter((s) => s.category === cat).map((s) => {
                 const on = selected.has(s.name)
@@ -154,8 +175,16 @@ export default function OnboardingScreen() {
                         {s.name}
                       </div>
                       {s.target && (
-                        <div style={{ fontSize: 11, color: on ? s.hex : 'var(--ink-3)', fontWeight: 600 }}>
-                          {s.target.unit === 'steps' ? `${s.target.qty}k steps` : `${s.target.qty} ${s.target.unit}`}
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: on ? s.hex : 'var(--ink-3)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {s.target.unit === 'steps'
+                            ? `${s.target.qty}k steps`
+                            : `${s.target.qty} ${s.target.unit}`}
                         </div>
                       )}
                     </div>
@@ -174,7 +203,13 @@ export default function OnboardingScreen() {
                         }}
                       >
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                          <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path
+                            d="M2 5l2.5 2.5L8 3"
+                            stroke="#fff"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </div>
                     )}
@@ -216,7 +251,9 @@ export default function OnboardingScreen() {
             transition: 'background .2s, color .2s',
           }}
         >
-          {selected.size > 0 ? `Start with ${selected.size} habit${selected.size > 1 ? 's' : ''}` : 'Select habits above'}
+          {selected.size > 0
+            ? `Start with ${selected.size} habit${selected.size > 1 ? 's' : ''}`
+            : 'Select habits above'}
         </button>
         <button
           onClick={handleSkip}

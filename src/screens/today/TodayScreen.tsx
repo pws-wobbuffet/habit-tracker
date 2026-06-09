@@ -59,9 +59,7 @@ export default function TodayScreen() {
           <br />
           {profile.name}.
         </h1>
-        <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: 0 }}>
-          Build the life you want.
-        </p>
+        <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: 0 }}>Build the life you want.</p>
       </div>
 
       {/* Summary card */}
@@ -187,7 +185,6 @@ export default function TodayScreen() {
           <HabitRow key={habit.id} habit={habit} />
         ))}
       </div>
-
 
       <button
         onClick={() => navigate('/create')}
