@@ -31,7 +31,7 @@ export function HabitSheet({ habitId }: Props) {
   if (!habit) return null
 
   return (
-    <Sheet open={true} onClose={closeSheet}>
+    <Sheet onClose={closeSheet}>
       <div className="px-5 pb-5">
         <div className="mb-4 flex items-center gap-3">
           <div

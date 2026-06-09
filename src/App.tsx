@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
-import { LazyMotion, domAnimation } from 'framer-motion'
+import { LazyMotion, domMax, AnimatePresence } from 'framer-motion'
 import { Route, Routes, useLocation } from 'react-router'
 import { SideNav } from './components/layout/SideNav'
 import { FloatingNav } from './components/layout/FloatingNav'
@@ -70,7 +70,7 @@ export default function App() {
   } as CSSProperties
 
   return (
-    <LazyMotion features={domAnimation}>
+    <LazyMotion features={domMax}>
       <div
         className="app-root flex h-[100dvh]"
         data-mode={mode === 'light' ? undefined : mode}
@@ -110,7 +110,12 @@ export default function App() {
         <OrientationLock />
       </div>
 
-      {activeHabitId && createPortal(<HabitSheet habitId={activeHabitId} />, document.body)}
+      {createPortal(
+        <AnimatePresence>
+          {activeHabitId && <HabitSheet key={activeHabitId} habitId={activeHabitId} />}
+        </AnimatePresence>,
+        document.body,
+      )}
       {createPortal(<ToastContainer />, document.body)}
     </LazyMotion>
   )
