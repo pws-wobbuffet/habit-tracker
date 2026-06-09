@@ -2,6 +2,8 @@
 
 Mobile-first PWA for daily habit tracking. Offline-first, installable to your home screen, with an iOS-native feel on any device.
 
+**[▶ Try the live app](https://habitus-bay.vercel.app)** — runs entirely in your browser; data is stored locally via IndexedDB, with no account or backend required.
+
 ## Features
 
 - Today View with progress ring and week strip

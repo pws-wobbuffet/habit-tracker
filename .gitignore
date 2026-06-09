@@ -39,3 +39,6 @@ screenshot.mjs
 docs/media/capture.mjs
 docs/media/video/
 docs/media/_frames/
+
+# Vercel (project linking — never commit to a public repo)
+.vercel
