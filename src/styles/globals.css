@@ -1,5 +1,32 @@
 @import 'tailwindcss';
 
+/*
+ * Bridge the runtime design tokens (defined on html / html[data-mode]) into
+ * Tailwind's theme so utilities like `bg-surface`, `text-ink`, `border-line`
+ * resolve to the same CSS variables. `inline` keeps the var() reference, so
+ * utilities stay dark-mode- and accent-aware automatically.
+ */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-good: var(--good);
+  --color-ring-track: var(--ring-track);
+
+  --ease-spring: var(--ease-spring);
+  --ease-out: var(--ease-out);
+}
+
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);

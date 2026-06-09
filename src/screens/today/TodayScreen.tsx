@@ -25,8 +25,8 @@ export default function TodayScreen() {
   const todayHabits = habits.filter((h) => isDueOnDay(h, todayDate))
   const weekDays = getWeekDays()
 
-  const today_full = new Date()
-  const dateLabel = today_full.toLocaleDateString('en-US', {
+  const todayFull = new Date()
+  const dateLabel = todayFull.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
